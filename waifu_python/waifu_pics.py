@@ -16,7 +16,7 @@ class WaifuPics:
             return None
 
     @staticmethod
-    async def fetch_sfw_image(tag=None, type="sfw"):
+    async def fetch_sfw_images(tag=None, type="sfw"):
         """Fetches a random image from waifu.pics based on the given tag and type."""
         type = type.lower()  
         tags = await WaifuPics.get_tags()
@@ -34,12 +34,11 @@ class WaifuPics:
             response = await client.get(url)
             if response.status_code == 200:
                 data = response.json()
-                if "url" in data:
-                    return data["url"]
+                return data["url"]
             return None
 
     @staticmethod
-    async def fetch_nsfw_image(tag=None, type="nsfw"):
+    async def fetch_nsfw_images(tag=None, type="nsfw"):
         """Fetches a random image from waifu.pics based on the given tag and type."""
         type = type.lower()  
         tags = await WaifuPics.get_tags()

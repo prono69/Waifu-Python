@@ -18,7 +18,7 @@ class NekosBest:
         return NekosBest.tags
 
     @staticmethod
-    async def fetch(tag=None):
+    async def fetch_sfw_images(tag=None):
         """Fetches a random image/GIF from nekos.best based on the given tag."""
         if not NekosBest.tags:
             await NekosBest.get_tags()  
@@ -30,5 +30,7 @@ class NekosBest:
             response = await client.get(url)
             if response.status_code == 200:
                 data = response.json()
-                return data["results"][0]["url"]  
+                images = data.get("results", [])
+                if images:
+                    return images[0].get("url") 
             return None

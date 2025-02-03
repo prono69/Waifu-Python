@@ -16,6 +16,7 @@ class PurrBot:
         "smile", "tail", "tickle", "eevee"
     ]
 
+
     @staticmethod
     async def get_tags() -> Dict[str, Any]:
         """Retrieve tags and reactions for gifs under SFW, and NSFW tags separately."""
@@ -25,7 +26,7 @@ class PurrBot:
         }
 
     @staticmethod
-    async def fetch_gif(reaction: Optional[str] = None, tag: Optional[str] = None) -> Dict[str, Any]:
+    async def fetch_sfw_gif(reaction: Optional[str] = None, tag: Optional[str] = None) -> Dict[str, Any]:
         """
         Fetch a gif from purrbot.site based on a reaction or tag.
         
@@ -42,7 +43,7 @@ class PurrBot:
         if tag not in PurrBot.purrbot_nsfw_tags:
             return {"error": "Invalid NSFW tag"}
 
-        url = f"{PurrBot.BASE_URL}/img/sfw/{reaction or 'angry'}/gif"
+        url = f"{PurrBot.BASE_URL}/img/sfw/{reaction}/gif"
         
         params = {}
         params["tag"] = tag
@@ -51,8 +52,8 @@ class PurrBot:
             try:
                 response = await client.get(url, params=params)
                 response.raise_for_status()
-                
-                return response.json()
+                data = response.json()
+                return data.get("link")
             except httpx.HTTPStatusError as e:
                 print(f"HTTP error occurred: {e}")
                 return {"error": "Failed to fetch GIF"}
@@ -74,14 +75,14 @@ class PurrBot:
         if tag and tag not in PurrBot.purrbot_nsfw_tags:
             return {"error": "Invalid NSFW tag"}
 
-        url = f"{PurrBot.BASE_URL}/img/sfw/{tag}/gif"
+        url = f"{PurrBot.BASE_URL}/img/nsfw/{tag}/gif"
         
         async with httpx.AsyncClient() as client:
             try:
                 response = await client.get(url)
                 response.raise_for_status()
-                
-                return response.json()
+                data = response.json()
+                return data.get("link")
             except httpx.HTTPStatusError as e:
                 print(f"HTTP error occurred: {e}")
                 return {"error": "Failed to fetch NSFW GIF"}
@@ -90,7 +91,7 @@ class PurrBot:
                 return {"error": "Request or JSON parsing failed"}
 
     @staticmethod
-    async def fetch_img(tag: Optional[str] = None) -> Dict[str, Any]:
+    async def fetch_sfw_images(tag: Optional[str] = None) -> Dict[str, Any]:
         """
         Fetch an image from purrbot.site based on a tag.
         
@@ -110,7 +111,8 @@ class PurrBot:
                 response = await client.get(url)
                 response.raise_for_status()
                 
-                return response.json()
+                data = response.json()
+                return data.get("link")
             except httpx.HTTPStatusError as e:
                 print(f"HTTP error occurred: {e}")
                 return {"error": "Failed to fetch image"}

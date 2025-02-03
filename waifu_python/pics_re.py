@@ -16,7 +16,7 @@ class PicRe:
 
     
     @staticmethod
-    async def fetch_image(tags: Optional[List[str]] = None) -> Dict[str, Any]:
+    async def fetch_sfw_images(tags: Optional[List[str]] = None) -> Dict[str, Any]:
         """
         Fetch image metadata from pic.re API with optional tag filtering
         
@@ -35,8 +35,8 @@ class PicRe:
             try:
                 response = await client.get(url, params=params)
                 response.raise_for_status()
-                
-                return response.json()
+                data = response.json()
+                return data.get("file_url")
                 
             except httpx.HTTPStatusError as e:
                 print(f"HTTP error occurred: {e}")
@@ -44,9 +44,3 @@ class PicRe:
             except (httpx.RequestError, ValueError) as e:
                 print(f"Request or JSON error: {e}")
                 return {}
-
-    @staticmethod
-    async def fetch_random_image() -> Dict[str, Any]:
-        """Fetch random image metadata without any tag filtering"""
-        return await PicRe.fetch_image(tags=None)
-    

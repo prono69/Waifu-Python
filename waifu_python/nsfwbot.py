@@ -17,26 +17,27 @@ class NSFWBot:
         except Exception as e:
             print(f"Error fetching tags: {e}")
             return {"error": str(e)}
-
+    
     @staticmethod
-    async def _fetch_image(endpoint_type: str, tag: str) -> Dict[str, Any]:
-        """Base method for fetching images. Requires a tag."""
+    async def _fetch_image(endpoint_type: str, tag: str) -> Optional[str]:
+        """Fetch image and return only the 'url_cdn' value."""
         url = f"{NSFWBot.BASE_URL}/{endpoint_type}/{tag.lower()}"
         
         try:
             async with httpx.AsyncClient() as client:
                 response = await client.get(url)
                 response.raise_for_status()
-                return response.json()  
+                data = response.json()
+                return data.get("url_cdn")  
         except httpx.HTTPStatusError as e:
             print(f"HTTP error ({e.response.status_code}): {e}")
-            return {"error": f"API request failed: {e}"}
         except Exception as e:
-            print(f"General error: {e}")
-            return {"error": str(e)}
+            print(f"error: {e}")
+        
+        return None 
 
     @staticmethod
-    async def fetch_sfw_image(tag: Optional[str] = None) -> Dict[str, Any]:
+    async def fetch_sfw_images(tag: Optional[str] = None) -> Dict[str, Any]:
         """Fetch an SFW image. If no tag is provided, select a random SFW tag."""
         tags = await NSFWBot.get_tags()
         if "sfw" not in tags or not tags["sfw"]:
@@ -46,7 +47,7 @@ class NSFWBot:
         return await NSFWBot._fetch_image("sfw", tag)
 
     @staticmethod
-    async def fetch_nsfw_image(tag: Optional[str] = None) -> Dict[str, Any]:
+    async def fetch_nsfw_images(tag: Optional[str] = None) -> Dict[str, Any]:
         """Fetch an NSFW image. If no tag is provided, select a random NSFW tag."""
         tags = await NSFWBot.get_tags()
         if "nsfw" not in tags or not tags["nsfw"]:
