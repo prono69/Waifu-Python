@@ -1,4 +1,7 @@
 from setuptools import setup, find_packages
+from pathlib import Path
+
+long_description = (Path(__file__).parent / "README.md").read_text()
 
 setup(
     name="waifu-python",
@@ -8,5 +11,7 @@ setup(
     author="Misfit",
     description="A project born out of boredom, designed to simplify and reduce the code related to the Waifu API.",
     url="https://github.com/yourusername/Waifu-Python",
-    license="MIT"
-)
+    license="MIT",
+    long_description=long_description,
+    long_description_content_type="text/markdown",
+    )
