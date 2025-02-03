@@ -12,12 +12,12 @@ pip install waifu-python
 
 ## API Included
 
-• Waifu.im
-• Waifu.pics
-• Nekos.best
-• Pics.re
-• Purrbot.site
-• N-sfw.com
+- [Waifu.im](https://www.waifu.im/)
+- [Waifu.pics](https://waifu.pics/)  
+- [Nekos.best](https://nekos.best/) 
+- [Pic.re](https://pic.re/)  
+- [Purrbot.site](https://purrbot.site/)  
+- [N-sfw.com](https://n-sfw.com/)
 
 ## Usage
 
