@@ -10,6 +10,15 @@ Use the package manager [pip](https://pip.pypa.io/en/stable/) to install **waifu
 pip install waifu-python
 ```
 
+## API Included
+
+• Waifu.im
+• Waifu.pics
+• Nekos.best
+• Pics.re
+• Purrbot.site
+• N-sfw.com
+
 ## Usage
 
 ```python
@@ -128,4 +137,4 @@ to discuss what you would like to change.
 
 ## License
 
-[MIT](https://choosealicense.com/licenses/mit/)
+This project is licensed under the [MIT License](https://choosealicense.com/licenses/mit/).
