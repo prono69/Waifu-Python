@@ -33,7 +33,7 @@ async def main():
     #retrive tags for the API
     tags = await WaifuIm.get_tags()
 
-    print(f"{image_data1}\n\n{tags}")
+    print(f"Random Image{image_data1}\n\nRaiden Shogun{image_data2}\n\nTags{tags}")
 
 asyncio.run(main())
 ```
