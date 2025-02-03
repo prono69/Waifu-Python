@@ -1,4 +1,5 @@
 LICENSE
+MANIFEST.in
 setup.py
 waifu_python/__init__.py
 waifu_python/nekos_best.py
