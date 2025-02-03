@@ -23,11 +23,13 @@ pip install waifu-python
 
 ```python
 import asyncio
-from waifu_python.waifu_im import WaifuIm
+from waifu_python import WaifuIm
 
 async def main():
-    #support for tags in args 
+
     image_data1 = await WaifuIm.fetch_sfw_images()
+    #support for tags in args 
+    image_data2 = await WaifuIm.fetch_sfw_images('raiden-shogun')
     #retrive tags for the API
     tags = await WaifuIm.get_tags()
 
@@ -40,12 +42,12 @@ asyncio.run(main())
 
 ```python
 import asyncio
-from waifu_python.waifu_im import WaifuIm
-from waifu_python.nekos_best import NekosBest
-from waifu_python.waifu_pics import WaifuPics
-from waifu_python.pics_re import PicRe
-from waifu_python.purr_bot import PurrBot
-from waifu_python.nsfwbot import NSFWBot
+from waifu_python import WaifuIm
+from waifu_python import NekosBest
+from waifu_python import WaifuPics
+from waifu_python import PicRe
+from waifu_python import PurrBot
+from waifu_python import NSFWBot
 
 
 async def main():

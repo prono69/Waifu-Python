@@ -29,3 +29,4 @@ pytest_cache/
 .idea/
 .DS_Store
 Thumbs.db
+test.py
