@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 from pathlib import Path
 
-long_description = (Path(__file__).parent / "README.md").read_text()
+long_description = (Path(__file__).parent / "README.MD").read_text()
 
 setup(
     name="waifu-python",
