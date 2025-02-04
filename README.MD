@@ -12,12 +12,15 @@ pip install waifu-python
 
 ## API Included
 
+- [Anilist](https://anilist.co/)
+- [Danborru](https://danbooru.donmai.us/)
 - [Waifu.im](https://www.waifu.im/)
 - [Waifu.pics](https://waifu.pics/)  
 - [Nekos.best](https://nekos.best/) 
 - [Pic.re](https://pic.re/)  
 - [Purrbot.site](https://purrbot.site/)  
 - [N-sfw.com](https://n-sfw.com/)
+- [Safeborru](https://safebooru.org/)
 
 ## Usage
 
