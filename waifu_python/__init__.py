@@ -4,3 +4,6 @@ from .nekos_best import NekosBest
 from .nsfwbot import NSFWBot
 from .pics_re import PicRe
 from .purr_bot import PurrBot
+from .danborru import Danbooru
+from .safeborru import SafeBooru
+from .anilist import AniList
