@@ -1,9 +1,9 @@
 import httpx, random
 from typing import Optional, Dict, Any
 
-class WaifuIm:
-    BASE_URL = "https://api.waifu.im/"
+from ..API.api import WAIFUIM_BASE_URL
 
+class WaifuIm:
     @staticmethod
     async def fetch_image(tag: Optional[str] = None) -> Optional[str]:
         """Fetch an image from waifu.im API and return the direct image URL."""
@@ -11,7 +11,7 @@ class WaifuIm:
         if tag:
             params["included_tags"] = tag
     
-        url = f"{WaifuIm.BASE_URL}search"
+        url = f"{WAIFUIM_BASE_URL}search"
     
         async with httpx.AsyncClient() as client:
             response = await client.get(url, params=params)
@@ -25,7 +25,7 @@ class WaifuIm:
     @staticmethod
     async def get_tags() -> Dict[str, Any]:
         """Fetch available tags from waifu.im API."""
-        url = f"{WaifuIm.BASE_URL}tags"
+        url = f"{WAIFUIM_BASE_URL}tags"
         async with httpx.AsyncClient() as client:
             response = await client.get(url)
             if response.status_code == 200:

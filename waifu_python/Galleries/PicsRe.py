@@ -1,13 +1,13 @@
 import httpx
 from typing import Optional, List, Dict, Any
 
-class PicRe:
-    BASE_URL = "https://pic.re/"
+from ..API.api import PICRE_BASE_URL
 
+class PicRe:
     @staticmethod
     async def get_tags() -> Dict[str, Any]:
         """Fetch available tags from pic.re API."""
-        url = f"{PicRe.BASE_URL}tags"
+        url = f"{PICRE_BASE_URL}tags"
         async with httpx.AsyncClient() as client:
             response = await client.get(url)
             if response.status_code == 200:
@@ -29,7 +29,7 @@ class PicRe:
         if tags:
             params["in"] = ",".join(tags)
         
-        url = f"{PicRe.BASE_URL}image.json"
+        url = f"{PICRE_BASE_URL}image.json"
         
         async with httpx.AsyncClient() as client:
             try:

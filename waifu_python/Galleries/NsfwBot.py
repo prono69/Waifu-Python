@@ -2,13 +2,13 @@ import httpx
 import random
 from typing import Dict, Any, Optional
 
-class NSFWBot:
-    BASE_URL = "https://api.n-sfw.com"
+from ..API.api import NSFWBOT_BASE_URL
 
+class NSFWBot:
     @staticmethod
     async def get_tags() -> Dict[str, Any]:
         """Fetch available SFW and NSFW tags."""
-        url = f"{NSFWBot.BASE_URL}/endpoints"
+        url = f"{NSFWBOT_BASE_URL}/endpoints"
         try:
             async with httpx.AsyncClient() as client:
                 response = await client.get(url)
@@ -21,7 +21,7 @@ class NSFWBot:
     @staticmethod
     async def _fetch_image(endpoint_type: str, tag: str) -> Optional[str]:
         """Fetch image and return only the 'url_cdn' value."""
-        url = f"{NSFWBot.BASE_URL}/{endpoint_type}/{tag.lower()}"
+        url = f"{NSFWBOT_BASE_URL}/{endpoint_type}/{tag.lower()}"
         
         try:
             async with httpx.AsyncClient() as client:

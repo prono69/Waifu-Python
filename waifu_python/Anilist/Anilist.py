@@ -3,16 +3,16 @@ import random
 import re
 from typing import Optional, Dict, Any, List
 
-class AniList:
-    GRAPHQL_URL = "https://graphql.anilist.co"
+from ..API.api import GRAPHQL_URL 
 
+class AniList:
     @staticmethod
     async def fetch_characters(query: str, variables: Dict[str, Any]) -> List[Dict[str, Any]]:
         """Fetch characters from AniList GraphQL API."""
         async with httpx.AsyncClient() as client:
             try:
                 headers = {"Content-Type": "application/json", "Accept": "application/json"}
-                response = await client.post(AniList.GRAPHQL_URL, headers=headers, json={"query": query, "variables": variables})
+                response = await client.post(GRAPHQL_URL, headers=headers, json={"query": query, "variables": variables})
                 response.raise_for_status()
                 data = response.json()
                 return data.get("data", {}).get("Page", {}).get("characters", [])

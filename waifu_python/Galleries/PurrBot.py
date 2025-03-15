@@ -2,9 +2,9 @@ import httpx
 import random
 from typing import Optional, Dict, Any
 
-class PurrBot:
-    BASE_URL = "https://purrbot.site/api"
+from ..API.api import PURRBOT_BASE_URL
 
+class PurrBot:
     purrbot_nsfw_tags = ["anal", "blowjob", "cum", "fuck", "pussylick", "solo", "solo_male", 
                          "threesome_fff", "threesome_ffm", "threesome_mmf", "yaoi", "yuri", "neko"]
     
@@ -43,7 +43,7 @@ class PurrBot:
         if tag not in PurrBot.purrbot_nsfw_tags:
             return {"error": "Invalid NSFW tag"}
 
-        url = f"{PurrBot.BASE_URL}/img/sfw/{reaction}/gif"
+        url = f"{PURRBOT_BASE_URL}/img/sfw/{reaction}/gif"
         
         params = {}
         params["tag"] = tag
@@ -75,7 +75,7 @@ class PurrBot:
         if tag and tag not in PurrBot.purrbot_nsfw_tags:
             return {"error": "Invalid NSFW tag"}
 
-        url = f"{PurrBot.BASE_URL}/img/nsfw/{tag}/gif"
+        url = f"{PURRBOT_BASE_URL}/img/nsfw/{tag}/gif"
         
         async with httpx.AsyncClient() as client:
             try:
@@ -104,7 +104,7 @@ class PurrBot:
         if tag and tag not in PurrBot.purrbot_tags:
             return {"error": "Invalid tag"}
         
-        url = f"{PurrBot.BASE_URL}/img/sfw/{tag}/img"
+        url = f"{PURRBOT_BASE_URL}/img/sfw/{tag}/img"
         
         async with httpx.AsyncClient() as client:
             try:

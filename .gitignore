@@ -27,6 +27,8 @@ pytest_cache/
 # Editor & OS files
 .vscode/
 .idea/
+cookies/
+gallery-dl/
 .DS_Store
 Thumbs.db
 test.py

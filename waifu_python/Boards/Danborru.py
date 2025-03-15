@@ -2,9 +2,9 @@ import httpx
 import random
 from typing import Optional, List, Union
 
-class Danbooru:
-    BASE_URL = "https://danbooru.donmai.us/posts.json"
+from ..API.api import DANBORRU_BASE_URL 
 
+class Danbooru:
     @staticmethod
     async def fetch_images(tag: Optional[str] = None, limit: int = 100) -> List[str]:
         """Fetch image URLs from Danbooru API based on a tag."""
@@ -14,7 +14,7 @@ class Danbooru:
 
         async with httpx.AsyncClient() as client:
             try:
-                response = await client.get(Danbooru.BASE_URL, params=params)
+                response = await client.get(DANBORRU_BASE_URL, params=params)
                 response.raise_for_status()
                 images = response.json()
                 return [img["file_url"] for img in images if "file_url" in img]  

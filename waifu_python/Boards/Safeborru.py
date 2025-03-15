@@ -2,9 +2,9 @@ import httpx
 import random
 from typing import Optional, List, Union
 
-class SafeBooru:
-    BASE_URL = "https://safebooru.org/index.php"
+from ..API.api import SAFEBORRU_BASE_URL
 
+class SafeBooru:
     @staticmethod
     async def fetch_images(tag: Optional[str] = None, limit: int = 100) -> List[str]:
         """Fetch image URLs from SafeBooru API based on a tag."""
@@ -20,7 +20,7 @@ class SafeBooru:
 
         async with httpx.AsyncClient() as client:
             try:
-                response = await client.get(SafeBooru.BASE_URL, params=params)
+                response = await client.get(SAFEBORRU_BASE_URL, params=params)
                 response.raise_for_status()
                 images = response.json()
 

@@ -1,12 +1,12 @@
 import httpx, random
 
-class WaifuPics:
-    BASE_URL = "https://api.waifu.pics"
+from ..API.api import WAIFUPICS_BASE_URL
 
+class WaifuPics:
     @staticmethod
     async def get_tags():
         """Fetches all available tags from the /endpoints API."""
-        url = f"{WaifuPics.BASE_URL}/endpoints"
+        url = f"{WAIFUPICS_BASE_URL}/endpoints"
         
         async with httpx.AsyncClient() as client:
             response = await client.get(url)
@@ -28,7 +28,7 @@ class WaifuPics:
         if not tag:
             return None  
 
-        url = f"{WaifuPics.BASE_URL}/{type}/{tag}"
+        url = f"{WAIFUPICS_BASE_URL}/{type}/{tag}"
         
         async with httpx.AsyncClient() as client:
             response = await client.get(url)
@@ -50,7 +50,7 @@ class WaifuPics:
         if not tag:
             return None
 
-        url = f"{WaifuPics.BASE_URL}/{type}/{tag}"
+        url = f"{WAIFUPICS_BASE_URL}/{type}/{tag}"
         
         async with httpx.AsyncClient() as client:
             response = await client.get(url)
