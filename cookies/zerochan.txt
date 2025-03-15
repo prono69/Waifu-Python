@@ -1,0 +1,8 @@
+# Netscape HTTP Cookie File
+
+.zerochan.net	TRUE	/	TRUE	1749791455	guest_id	13318119
+.zerochan.net	TRUE	/	TRUE	1749800635	z_hash	88cfa7d40d059ed28b74d465692833fa
+.zerochan.net	TRUE	/	TRUE	1749800635	z_id	2114534
+.zerochan.net	TRUE	/	TRUE	1749800635	z_theme	11
+www.zerochan.net	FALSE	/	TRUE	1742015749	g_csrf_token	8880e71449a7ad39
+www.zerochan.net	FALSE	/	FALSE	1742108909	PHPSESSID	k67mut84ef8sjt7ggvclgaihpr

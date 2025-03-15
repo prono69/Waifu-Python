@@ -14,13 +14,17 @@ pip install waifu-python
 
 - [Anilist](https://anilist.co/)
 - [Danborru](https://danbooru.donmai.us/)
-- [Waifu.im](https://www.waifu.im/)
-- [Waifu.pics](https://waifu.pics/)  
+- [KemonoParty](https://kemono.su/)
+- [Konachan](https://konachan.com/)
 - [Nekos.best](https://nekos.best/) 
+- [N-sfw.com](https://n-sfw.com/)
 - [Pic.re](https://pic.re/)  
 - [Purrbot.site](https://purrbot.site/)  
-- [N-sfw.com](https://n-sfw.com/)
 - [Safeborru](https://safebooru.org/)
+- [Waifu.im](https://www.waifu.im/)
+- [Waifu.pics](https://waifu.pics/)  
+- [Yande.re](https://yande.re/)
+- [Zerochan](https://www.zerochan.net/)
 
 ## Usage
 
@@ -133,9 +137,11 @@ async def main():
 
 
     print(f"SFW\n\n{image_data1}\n{image_data2}\n{image_data3}\n{image_data4}\n{image_data5}\n{image_data6}\n\nNSFW\n\n{image_data11}\n{image_data33}\n{image_data55}\n{image_data66}")
+
+# Tags mightbe overwhelming (REMOVE '#' to get tags)
+
     #\n\nTAGS\n\n{image_data111}\n\n{image_data222}\n\n{image_data333}\n\n{image_data444}\n\n{image_data555}\n\n{image_data666}") 
 
-#---TAGs mightbe overwhelming....
 
 asyncio.run(main())
 ```
