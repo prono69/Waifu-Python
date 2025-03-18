@@ -10,8 +10,8 @@ class Yandere:
     async def fetch_images(tag: Optional[str] = None, limit: int = 1, max_retries: int = 15) -> List[str]:
         params = {"limit": 1000} if limit == 1 else {"limit": limit}
         if tag:
-            params["tags"] = tag.replace(" ", "_")  # Replace spaces with underscores
-
+            params["tags"] = tag.replace(" ", "_") 
+            
         for _ in range(max_retries):
             try:
                 response = await client.get(YANDE_RE_BASE_URL, params=params)

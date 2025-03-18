@@ -215,7 +215,7 @@ if __name__ == "__main__":
 
 
 
-## Example 3: Using Waifu API in a Telegram Bot
+## Example 4: Using Waifu API in a Telegram Bot
 
 ```python
 from pyrogram import Client, filters

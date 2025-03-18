@@ -20,7 +20,6 @@ class NSFWBot:
     @staticmethod
     async def _fetch_image(endpoint_type: str, tag: str) -> Optional[str]:
         """Fetch an image and return only the 'url_cdn' value."""
-        # Replace spaces with '-' in the tag
         tag = tag.replace(" ", "-")
         url = f"{NSFWBOT_BASE_URL}/{endpoint_type}/{tag.lower()}"
         try:
