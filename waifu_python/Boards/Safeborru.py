@@ -1,48 +1,50 @@
-import httpx
 import random
 from typing import Optional, List, Union
 
 from ..API.api import SAFEBORRU_BASE_URL
+from ..Client.Client import client
 
-class SafeBooru:
+class Safebooru:
     @staticmethod
-    async def fetch_images(tag: Optional[str] = None, limit: int = 100) -> List[str]:
-        """Fetch image URLs from SafeBooru API based on a tag."""
+    async def fetch_images(tag: Optional[str] = None, limit: int = 1) -> Union[str, List[str], None]:
+        """
+        Fetch image URLs from SafeBooru API.
+        """
+        if limit == 1:
+            request_limit = 100
+            pid = random.randint(1, 50)
+        else:
+            request_limit = limit
+            pid = None
+
         params = {
             "page": "dapi",
             "s": "post",
             "q": "index",
             "json": 1,
-            "limit": limit
+            "limit": request_limit,
         }
+        if pid is not None:
+            params["pid"] = pid
+
         if tag:
-            params["tags"] = tag  
+            params["tags"] = tag.replace(" ", "_")
 
-        async with httpx.AsyncClient() as client:
-            try:
-                response = await client.get(SAFEBORRU_BASE_URL, params=params)
-                response.raise_for_status()
-                images = response.json()
+        try:
+            response = await client.get(SAFEBORRU_BASE_URL, params=params)
+            response.raise_for_status()
+            images = response.json()
+            file_urls = [
+                f"https://safebooru.org/images/{img['directory']}/{img['image']}"
+                for img in images if "image" in img and "directory" in img
+            ]
+            if not file_urls:
+                return None
 
-                
-                return [
-                    f"https://safebooru.org/images/{img['directory']}/{img['image']}"
-                    for img in images if "image" in img and "directory" in img
-                ]
-            except httpx.HTTPStatusError as e:
-                print(f"HTTP error: {e}")
-                return []
-            except (httpx.RequestError, ValueError) as e:
-                print(f"Request error: {e}")
-                return []
-
-    @staticmethod
-    async def get_random_image(tags: Optional[Union[str, List[str]]] = None) -> Optional[str]:
-        """Get a random image URL using a randomly selected tag from the given list."""
-        if isinstance(tags, list) and tags:
-            tag = random.choice(tags)  
-        else:
-            tag = tags  
-
-        images = await SafeBooru.fetch_images(tag)
-        return random.choice(images) if images else None  
+            if limit == 1:
+                return random.choice(file_urls)
+            else:
+                return file_urls[:limit]
+        except Exception as e:
+            print(f"Error fetching images: {e}")
+            return None

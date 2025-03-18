@@ -1,46 +1,39 @@
-import httpx
+import random
 from typing import Optional, List, Dict, Any
 
 from ..API.api import PICRE_BASE_URL
+from ..Client.Client import client
 
 class PicRe:
     @staticmethod
     async def get_tags() -> Dict[str, Any]:
         """Fetch available tags from pic.re API."""
         url = f"{PICRE_BASE_URL}tags"
-        async with httpx.AsyncClient() as client:
+        try:
             response = await client.get(url)
-            if response.status_code == 200:
-                return response.json()
-            raise Exception(f"Failed to fetch tags: {response.text}")
+            response.raise_for_status()
+            return response.json()
+        except Exception as e:
+            print(f"Error fetching tags: {e}")
+            return {}
 
-    
     @staticmethod
-    async def fetch_sfw_images(tags: Optional[List[str]] = None) -> Dict[str, Any]:
+    async def fetch_sfw_images(tags: Optional[List[str]] = None) -> Optional[str]:
         """
-        Fetch image metadata from pic.re API with optional tag filtering
-        
-        Parameters:
-        - tags: List of tags to include (e.g., ['long_hair', 'blonde_hair'])
-        
+        Fetch a safe-for-work image URL from pic.re API based on tags.
+
+        Automatically replaces spaces in each tag with underscores.
         """
         params = {}
-        
         if tags:
-            params["in"] = ",".join(tags)
+            params["in"] = ",".join(tag.replace(" ", "_") for tag in tags)
         
         url = f"{PICRE_BASE_URL}image.json"
-        
-        async with httpx.AsyncClient() as client:
-            try:
-                response = await client.get(url, params=params)
-                response.raise_for_status()
-                data = response.json()
-                return data.get("file_url")
-                
-            except httpx.HTTPStatusError as e:
-                print(f"HTTP error occurred: {e}")
-                return {}
-            except (httpx.RequestError, ValueError) as e:
-                print(f"Request or JSON error: {e}")
-                return {}
+        try:
+            response = await client.get(url, params=params)
+            response.raise_for_status()
+            data = response.json()
+            return data.get("file_url")
+        except Exception as e:
+            print(f"Error fetching image: {e}")
+            return None

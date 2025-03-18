@@ -1,6 +1,12 @@
-# WAIFU-PYTHON
+![yae thumbnail](https://github.com/user-attachments/assets/55db4b9a-8649-49b3-bfd4-8af2305f1445)
 
-A project born out of boredom, designed to simplify and reduce the code related to the Waifu API.
+<h1 align="center"> Waifu-Python </h1>
+
+<div align="center">
+
+A project born out of boredom, designed to simplify and reduce the code related to the [Waifu API](https://github.com/MisfiT2020/wpt/tree/main?tab=readme-ov-file#api-included)
+
+</div>
 
 ## Installation
 
@@ -10,19 +16,45 @@ Use the package manager [pip](https://pip.pypa.io/en/stable/) to install **waifu
 pip install waifu-python
 ```
 
+## Features
+
+- **Flexible Search Input:**  
+  Search queries no longer require underscores or hyphens between words, making it easier to find characters and tags.  
+  For example, searching for `"Raiden Shogun"` will work the same as `"Raiden_Shogun"` or `"Raiden-Shogun"`  
+
+- **Character Search:**  
+  Search for characters by name to get targeted results.  
+
+- **Tag Retrieval:**  
+  Retrieve available tags from supported [API](https://github.com/MisfiT2020/wpt/blob/main/README.MD#api-included) to help refine and filter your searches.  
+
+- **Random Image Fetching:**  
+  Easily retrieve random images across multiple supported APIs.  
+
+- **API-Specific Image Retrieval:**  
+  Fetch random images from a specific API (e.g., **Danbooru, Waifu.im, Waifu.pics, etc.**) based on your preference.  
+
 ## API Included
 
-- [Anilist](https://anilist.co/)
-- [Danborru](https://danbooru.donmai.us/)
-- [Waifu.im](https://www.waifu.im/)
-- [Waifu.pics](https://waifu.pics/)  
-- [Nekos.best](https://nekos.best/) 
-- [Pic.re](https://pic.re/)  
-- [Purrbot.site](https://purrbot.site/)  
-- [N-sfw.com](https://n-sfw.com/)
-- [Safeborru](https://safebooru.org/)
+| API           | WORKING | TAGS |
+|--------------|---------|------|
+| [Anilist](https://anilist.co/) | ✓ | - |
+| [Danborru](https://danbooru.donmai.us/) | ✓ | - |
+| [Gelbooru](https://gelbooru.com/) | ✓ | - |
+| [KemonoParty](https://kemono.su/) | ✓ | - |
+| [Konachan](https://konachan.net/) | ✓ | - |
+| [Nekos.best](https://nekos.best/) | ✓ | ✓ |
+| [N-sfw.com](https://n-sfw.com/) | ✓ | ✓ |
+| [Pic.re](https://pic.re/) | ✓ | ✓ |
+| [Purrbot.site](https://purrbot.site/) | ✓ | - |
+| [Rule34](https://rule34.xxx/) | ✓ | - |
+| [Safeborru](https://safebooru.org/) | ✓ | - |
+| [Waifu.im](https://www.waifu.im/) | ✓ | ✓ |
+| [Waifu.pics](https://waifu.pics/) | ✓ | ✓ |
+| [Zerochan](https://www.zerochan.net/) | ✓ | - |
 
-## Usage
+
+## Usage Example
 
 ```python
 import asyncio
@@ -31,9 +63,9 @@ from waifu_python import WaifuIm
 async def main():
 
     image_data1 = await WaifuIm.fetch_sfw_images()
-    #support for tags in args 
+    #Support for tags in Parameters
     image_data2 = await WaifuIm.fetch_sfw_images('raiden-shogun')
-    #retrive tags for the API
+    #Retrive tags for the API
     tags = await WaifuIm.get_tags()
 
     print(f"Random Image{image_data1}\n\nRaiden Shogun{image_data2}\n\nTags{tags}")
@@ -41,158 +73,200 @@ async def main():
 asyncio.run(main())
 ```
 
-## Anilist Usage
+## **Required Class Functions**
+
+Each module in this library must implement the following functions:
+
+| Function Name        | APIs Used | Description |
+|----------------------|-----------| ------------|
+| `fetch_images`      | `Danbooru`, `Yandere`, `Rule34` | Fetches both SFW and NSFW images |
+| `fetch_sfw_images`  | `WaifuIm`, `WaifuPics`, `Safebooru`, `NekosBest`, `NSFWBot`, `PicRe`, `Konachan`, `Zerochan` | Fetches only SFW images |
+| `fetch_nsfw_images` | `WaifuIm`, `WaifuPics`, `Konachan`, `NSFWBot`, `KemonoParty` | Fetches only NSFW images |
+| `fetch_sfw_gif`     | `PurrBot` | Fetches SFW GIFs |
+| `fetch_nsfw_gif`    | `PurrBot` | Fetches NSFW GIFs |
+| `get_tags`          | `WaifuIm`, `NekosBest`, `WaifuPics`, `PicRe`, `NSFWBot`, `PurrBot` | Fetches Tags from API |
+
+
+## Example 1: Fetching Images from Multiple APIs
 
 ```python
 import asyncio
-from waifu_python import AniList
+from waifu_python import (
+    WaifuIm, NekosBest, WaifuPics, PicRe, PurrBot, NSFWBot,
+    Safebooru, Danbooru, Konachan, Yandere, Zerochan, KemonoParty, Rule34
+)
 
 async def main():
-    try:
-        random_waifu = await AniList.get_random_waifus()  
-        if random_waifu:
-            waifu = random_waifu[0]  
-            print(f"Name: {waifu['name']}")
-            print(f"Anime: {waifu['anime']}")
-            print(f"Image: {waifu['image']}")
-            print(f"Age: {waifu['age']}")
-            print(f"Gender: {waifu['gender']}")
-            print(f"Description: {waifu['description']}")
-        else:
-            print("No waifus found.")
-    
-    except Exception as e:
-        print(f"An error occurred: {e}")
+    # ----- SFW Images -----
+    sfw_images = {
+        "WaifuIm": await WaifuIm.fetch_sfw_images(),
+        "NekosBest": await NekosBest.fetch_sfw_images(),
+        "WaifuPics": await WaifuPics.fetch_sfw_images(),
+        "PicRe": await PicRe.fetch_sfw_images(),
+        "NSFWBot": await NSFWBot.fetch_sfw_images(),
+        "PurrBot": await PurrBot.fetch_sfw_images(),
+        "SafeBooru": await Safebooru.fetch_images(),
+        "Konachan": await Konachan.fetch_sfw_images(),
+        "Zerochan": await Zerochan.fetch_sfw_images(),
+    }
+
+    # ----- NSFW Images/GIFs -----
+    nsfw_images = {
+        "WaifuIm": await WaifuIm.fetch_nsfw_images(),
+        "WaifuPics": await WaifuPics.fetch_nsfw_images(),
+        "NSFWBot": await NSFWBot.fetch_nsfw_images(),
+        "PurrBot GIF": await PurrBot.fetch_nsfw_gif(),
+        "Danbooru": await Danbooru.fetch_images(),
+        "Yandere": await Yandere.fetch_images(),
+        "Rule34": await Rule34.fetch_images(),
+        "KemonoParty": await KemonoParty.fetch_nsfw_images()
+    }
+
+    # ----- Tags -----
+    tags = {
+        "WaifuIm": await WaifuIm.get_tags(),
+        "NekosBest": await NekosBest.get_tags(),
+        "WaifuPics": await WaifuPics.get_tags(),
+        "PicRe": await PicRe.get_tags(),
+        "NSFWBot": await NSFWBot.get_tags(),
+        "PurrBot": await PurrBot.get_tags()
+    }
+
+    # Display results
+    print("----- SFW Images -----")
+    for key, value in sfw_images.items():
+        print(f"{key}: {value}")
+
+    print("\n----- NSFW Images/GIFs -----")
+    for key, value in nsfw_images.items():
+        print(f"{key}: {value}")
+
+#------Tags Are Overwhelming------
+#   print("\n----- Tags -----")
+#   for key, value in tags.items():
+#       print(f"{key}: {value}")
+
+asyncio.run(main())
+
+```
+
+## Example 2: Fetching Random Images
+
+```python
+import asyncio
+from waifu_python import RandomWaifu
+
+async def main():
+
+    random_img = await RandomWaifu.get_random_image()
+    sfw_img = await RandomWaifu.get_random_sfw_image()
+    nsfw_img = await RandomWaifu.get_random_nsfw_image()
+    sfw_gif = await RandomWaifu.get_random_sfw_gif()
+    nsfw_gif = await RandomWaifu.get_random_nsfw_gif()
+
+    print("Random Image:", random_img)
+    print("SFW Image:", sfw_img)
+    print("NSFW Image:", nsfw_img)
+    print("SFW GIF:", sfw_gif)
+    print("NSFW GIF:", nsfw_gif)
 
 if __name__ == "__main__":
     asyncio.run(main())
 ```
 
-## Example 1
+### Available Methods for Random Image Fetching
+
+| Function | Description |
+|----------|-------------|
+| `get_random_image()` | Returns a completely random image (SFW or NSFW). |
+| `get_random_sfw_image()` | Returns a random SFW image. |
+| `get_random_nsfw_image()` | Returns a random NSFW image. |
+| `get_random_sfw_gif()` | Returns a random SFW GIF. |
+| `get_random_nsfw_gif()` | Returns a random NSFW GIF. |
+
+
+## Example 3: Anilist Waifus/Characters
 
 ```python
 import asyncio
-from waifu_python import WaifuIm
-from waifu_python import NekosBest
-from waifu_python import WaifuPics
-from waifu_python import PicRe
-from waifu_python import PurrBot
-from waifu_python import NSFWBot
-from waifu_python import AniList
-from waifu_python import SafeBooru
-from waifu_python import Danbooru
-
+from waifu_python import Anilist
 
 async def main():
 
-#-----------------SFW-----------------
-
-
-    image_data1 = await WaifuIm.fetch_sfw_images()
-    image_data2 = await NekosBest.fetch_sfw_images()
-    image_data3 = await WaifuPics.fetch_sfw_images()
-    image_data4 = await PicRe.fetch_sfw_images()
-    image_data5 = await NSFWBot.fetch_sfw_images()
-    image_data6 = await PurrBot.fetch_sfw_images()
-    image_data7 = await SafeBooru.get_random_image() #check safeborru site for tags
-
-
-#-----------------NSFW -----------------
-
-
-    image_data11 = await WaifuIm.fetch_nsfw_images()
-    image_data33 = await WaifuPics.fetch_nsfw_images()
-    image_data55 = await NSFWBot.fetch_nsfw_images()
-    image_data66 = await PurrBot.fetch_nsfw_gif()
-    image_data77 = await Danbooru.get_random_image() #check danborru site for tags
-
-
-#---------------Anilist-----------------
-
-
-#         Refer to Anilist Usage
-
-
-#------------------TAGS-----------------
-
-
-    image_data111 = await WaifuIm.get_tags()
-    image_data222 = await NekosBest.get_tags()
-    image_data333 = await WaifuPics.get_tags()
-    image_data444 = await PicRe.get_tags()
-    image_data555 = await NSFWBot.get_tags()
-    image_data666 = await PurrBot.get_tags()
-
-
-#-------------------GIF-------------------
-
-
-# WAIFU.PICS
-# NEKO.BEST
-# PURRBOT
-
-
-    print(f"SFW\n\n{image_data1}\n{image_data2}\n{image_data3}\n{image_data4}\n{image_data5}\n{image_data6}\n\nNSFW\n\n{image_data11}\n{image_data33}\n{image_data55}\n{image_data66}")
-    #\n\nTAGS\n\n{image_data111}\n\n{image_data222}\n\n{image_data333}\n\n{image_data444}\n\n{image_data555}\n\n{image_data666}") 
-
-#---TAGs mightbe overwhelming....
-
-asyncio.run(main())
+    waifus = await Anilist.fetch_waifus(search='Mahiru Shiina')
+    characters = await Anilist.fetch_characters(search="eren yeager")
+    print(waifus)
+    print(characters)
+    
+if __name__ == "__main__":
+    asyncio.run(main())
 ```
 
-## Example 3 (TELEGRAM BOT)
+### Available Methods:
 
-Check Example 1 for more functions And Anilist Usage for anilist
+| Function | Description | Search Parameter | Returned Fields |
+|----------|-------------|------------------| --------------- |
+| `fetch_waifus(search="<search>")` | Fetches waifus only (female characters). | Optional | `name`, `anime`, `image`, `age`, `gender`, `description` |
+| `fetch_characters(search="<search>")` | Fetches all characters (male & female). | Optional | `name`, `anime`, `image`, `age`, `gender`, `description` |
+
+##
+
+🔹 If `search="<character_name>"` is not provided, it will return random characters.
+
+
+
+## Example 3: Using Waifu API in a Telegram Bot
 
 ```python
 from pyrogram import Client, filters
-from waifu_python import AniList
-from waifu_python import SafeBooru
-from waifu_python import Danbooru
+from waifu_python import AniList, SafeBooru, Danbooru
 
-app = Client("Raiden", api_id="API_ID", api_hash="API_HASH", bot_token="BOT_TOKEN")
+app = Client("Raiden", api_id="YOUR_API_ID", api_hash="YOUR_API_HASH", bot_token="YOUR_BOT_TOKEN")
 
 @app.on_message(filters.command("sfw"))
 async def send_sfw_image(client, message):
-#Safeborru
-    command = message.text.split()
-    tag = command[1] if len(command) > 1 else None
+    # Use SafeBooru to fetch a random SFW image.
+    args = message.text.split()
+    tag = args[1] if len(args) > 1 else None
     try:
         image_url = await SafeBooru.get_random_image(tag)
         if image_url:
             await message.reply_photo(image_url)
+        else:
+            await message.reply("No SFW image found.")
     except Exception as e:
-        await message.reply(f"Error: {str(e)}")
+        await message.reply(f"Error: {e}")
 
 @app.on_message(filters.command("nsfw"))
-#Danborru
 async def send_nsfw_image(client, message):
-    command = message.text.split()
-    tag = command[1] if len(command) > 1 else None
+    # Use Danbooru to fetch a random NSFW image.
+    args = message.text.split()
+    tag = args[1] if len(args) > 1 else None
     try:
         image_url = await Danbooru.get_random_image(tag)
         if image_url:
             await message.reply_photo(image_url)
+        else:
+            await message.reply("No NSFW image found.")
     except Exception as e:
-        await message.reply(f"Error: {str(e)}")
+        await message.reply(f"Error: {e}")
 
-#-----------------------------------Anilist--------------------------------------
+# --------------------------------- Anilist ----------------------------------
 
 @app.on_message(filters.command("waifu"))
-#optional name (female) or random female character
-async def send_nsfw_images(client, message):
-    command = message.text.split(maxsplit=1)
-    search = command[1] if len(command) > 1 else None
-
+async def send_waifu_image(client, message):
+    # Fetch a random waifu (female character) from Anilist.
+    args = message.text.split(maxsplit=1)
+    search = args[1] if len(args) > 1 else None
     try:
-        waifus = await AniList.get_random_waifus(count=1, search=search)  
+        waifus = await AniList.fetch_waifus(count=1, search=search)
         if not waifus:
             await message.reply("No waifus found.")
             return
-
-        waifu = waifus[0]  
-        
-        description = waifu['description'][:500] + "..." if len(waifu['description']) > 500 else waifu['description']
+        waifu = waifus[0]
+        description = (waifu['description'][:500] + "..."
+                       if len(waifu['description']) > 500
+                       else waifu['description'])
         caption = (
             f"**Name:** {waifu['name']}\n"
             f"**Anime:** {waifu['anime']}\n"
@@ -205,20 +279,19 @@ async def send_nsfw_images(client, message):
         await message.reply(f"Error: {e}")
 
 @app.on_message(filters.command("character"))
-#optional name or random, male and female character
-async def send_characters(client, message):
-    command = message.text.split(maxsplit=1)
-    search = command[1] if len(command) > 1 else None
-
+async def send_character(client, message):
+    # Fetch a random character (male or female) from Anilist.
+    args = message.text.split(maxsplit=1)
+    search = args[1] if len(args) > 1 else None
     try:
-        characters = await AniList.get_random_characters(count=1, search=search)  
+        characters = await AniList.fetch_characters(count=1, search=search)
         if not characters:
             await message.reply("No characters found.")
             return
-
-        character = characters[0]  
-        
-        description = character['description'][:500] + "..." if len(character['description']) > 500 else character['description']
+        character = characters[0]
+        description = (character['description'][:500] + "..."
+                       if len(character['description']) > 500
+                       else character['description'])
         caption = (
             f"**Name:** {character['name']}\n"
             f"**Anime:** {character['anime']}\n"
@@ -230,16 +303,41 @@ async def send_characters(client, message):
     except Exception as e:
         await message.reply(f"Error: {e}")
 
-
 if __name__ == "__main__":
     app.run()
 ```
 
 ## Contributing
 
-Pull requests are welcome. For major changes, please open an issue first
-to discuss what you would like to change.
+We welcome contributions to **waifu-python**! If you'd like to improve the project, please follow these steps:
+
+- **Fork** the repository to your own GitHub account.
+- **Clone** the project to your local machine.
+- **Create a branch** locally with a succinct but descriptive name (e.g. `feature/your-feature`).
+- **Commit** your changes to the branch, following any formatting.
+- **Push** your changes to your fork.
+- **Open a Pull Request** in our repository, so that we can efficiently review your changes.
+
+Thank you for contributing to **waifu-python**!
 
 ## License
 
-This project is licensed under the [MIT License](https://choosealicense.com/licenses/mit/).
+    Copyright (c) [2025] [Misfit]
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+    
+    The above copyright notice and this permission notice shall be included in all
+    copies or substantial portions of the Software.
+    
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.

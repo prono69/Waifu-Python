@@ -1,6 +1,6 @@
 # API ENDPOINTS
 
-GRAPHQL_URL = "https://graphql.anilist.co"
+GRAPHQL_BASE_URL = "https://graphql.anilist.co"
 
 DANBORRU_BASE_URL = "https://danbooru.donmai.us/posts.json"
 

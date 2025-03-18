@@ -1,11 +1,11 @@
-import httpx
-import random
+import random, httpx
 import subprocess
 import asyncio
-from typing import Optional
+from typing import Optional, Tuple
 from urllib.parse import urlparse, urlunparse, parse_qs, urlencode
 
 from ..API.api import ZEROCHAN_BASE_URL
+from ..Client.Client import client  
 
 class Zerochan:
     USER_AGENT = "RaidenTG - RaidenShogun"
@@ -17,38 +17,36 @@ class Zerochan:
         tag: Optional[str] = None,
         size: str = 'large'
     ) -> Optional[str]:
-        """Fetch a random image with comprehensive fallback handling.
-        
-        If the result is null, retry up to 4 times. If still null, return None.
+        """
+        Fetch a random image with comprehensive fallback handling.
+        Retries up to 4 times; if still null, returns None.
         """
         max_attempts = 4
         result = None
         for attempt in range(1, max_attempts + 1):
-            async with httpx.AsyncClient(follow_redirects=False) as client:
-                try:
-                    processed_tag, base_url, headers = Zerochan._prepare_request(tag)
-                    params = await Zerochan._get_random_params(client, processed_tag, headers)
-                    
-                    final_url, _ = await Zerochan._follow_redirects(client, base_url, params, headers)
-                    
-                    posts = await Zerochan._fetch_posts(client, final_url, params, headers)
-                    if not posts:
-                        continue
-                    
-                    post = random.choice(posts)
-                    if not (post_id := post.get('id')):
-                        continue
-                    
-                    if api_url := await Zerochan._get_api_image_url(client, post_id, size, headers):
-                        result = api_url
-                        break
-                    
-                    fallback = await Zerochan._get_gallerydl_image_url(post_id)
-                    if fallback:
-                        result = fallback
-                        break
-                except Exception:
-                    pass  
+            
+            try:
+                processed_tag, base_url, headers = Zerochan._prepare_request(tag)
+                params = await Zerochan._get_random_params(client, processed_tag, headers)
+                final_url, _ = await Zerochan._follow_redirects(client, base_url, params, headers)
+                posts = await Zerochan._fetch_posts(client, final_url, params, headers)
+                if not posts:
+                    continue
+
+                post = random.choice(posts)
+                if not (post_id := post.get('id')):
+                    continue
+
+                if api_url := await Zerochan._get_api_image_url(client, post_id, size, headers):
+                    result = api_url
+                    break
+
+                fallback = await Zerochan._get_gallerydl_image_url(post_id)
+                if fallback:
+                    result = fallback
+                    break
+            except Exception:
+                pass  
             if result is None and attempt < max_attempts:
                 await asyncio.sleep(1)
         return result
@@ -91,14 +89,13 @@ class Zerochan:
             return None
         
     @staticmethod
-    async def _follow_redirects(client, url, params, headers):
+    async def _follow_redirects(client, url: str, params: dict, headers: dict) -> Tuple[str, dict]:
         current_url = url
         current_params = params.copy()
         redirect_count = 0
 
         while redirect_count < Zerochan.MAX_REDIRECTS:
             response = await client.get(current_url, params=current_params, headers=headers)
-            
             if response.status_code not in (301, 302, 303, 307, 308):
                 return current_url, current_params
 
@@ -128,7 +125,7 @@ class Zerochan:
         return current_url, current_params
 
     @staticmethod
-    async def _fetch_posts(client, url, params, headers):
+    async def _fetch_posts(client, url: str, params: dict, headers: dict) -> list:
         """Fetch and parse posts from API response."""
         try:
             response = await client.get(url, params=params, headers=headers)
@@ -140,10 +137,10 @@ class Zerochan:
             return []
 
     @staticmethod
-    async def _get_image_url(client, post_id: int, size: str, headers: dict):
+    async def _get_image_url(client, post_id: int, size: str, headers: dict) -> Optional[str]:
         """Fetch image URL with redirect handling.
         
-        If a 303 redirect occurs, fallback to gallery‑dl.
+        If a 303 redirect occurs, falls back to gallery‑dl.
         """
         if not post_id:
             return None
@@ -173,30 +170,23 @@ class Zerochan:
             return None
 
     @staticmethod
-    def _prepare_request(tag: Optional[str]):
+    def _prepare_request(tag: Optional[str]) -> Tuple[str, str, dict]:
         if tag:
             tags = [t.strip().replace(" ", "+") for t in tag.split(",")]
             processed_tag = ",".join(tags)
         else:
             processed_tag = ""
         path = f"/{processed_tag}" if processed_tag else "/"
-        return (
-            processed_tag,
-            f"{ZEROCHAN_BASE_URL}{path}",
-            {"User-Agent": Zerochan.USER_AGENT, "Referer": ZEROCHAN_BASE_URL}
-        )
+        headers = {"User-Agent": Zerochan.USER_AGENT, "Referer": ZEROCHAN_BASE_URL}
+        return processed_tag, f"{ZEROCHAN_BASE_URL}{path}", headers
 
     @staticmethod
-    async def _get_random_params(client, processed_tag: str, headers: dict):
+    async def _get_random_params(client, processed_tag: str, headers: dict) -> dict:
         """Generate random pagination parameters."""
         if processed_tag:
             return {'json': '', 'l': 100, 'p': random.randint(1, 10)}
         try:
-            response = await client.get(
-                f"{ZEROCHAN_BASE_URL}/?json",
-                params={'json': '', 'l': 1},
-                headers=headers
-            )
+            response = await client.get(f"{ZEROCHAN_BASE_URL}/?json", params={'json': '', 'l': 1}, headers=headers)
             if (data := response.json()) and (posts := data.get('items', data)):
                 return {'json': '', 'l': 100, 'o': random.randint(1, posts[0]['id'])}
         except Exception:
