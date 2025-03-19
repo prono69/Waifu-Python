@@ -7,11 +7,16 @@ setup(
     name="waifu-python",
     version="1.7.1",
     packages=find_packages(),
-    install_requires=["httpx"],
+    install_requires=["httpx, gallery-dl"],
     author="Misfit",
     description="A project born out of boredom, designed to simplify and reduce the code related to the Waifu API.",
     url="https://github.com/MisfiT2020/Waifu-Python",
     license="MIT",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    )
+    entry_points={
+        'console_scripts': [
+            'python-waifu=waifu_python.__main__:main',
+        ],
+    },
+)
