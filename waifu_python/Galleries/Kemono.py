@@ -1,5 +1,5 @@
 import random
-from typing import Optional, List
+from typing import Optional, List, Union, Dict, Any
 
 from ..Client.Client import client 
 from ..API.api import KEMONO_BASE_URL
@@ -9,7 +9,6 @@ class KemonoParty:
     async def fetch_posts(tag: Optional[str] = None, limit: int = 100) -> List[dict]:
         """
         Fetch posts from Kemono Party API based on a tag.
-
         Each post's 'file' and 'attachments' fields will have a new key 'full_url'
         containing the complete URL, constructed by prefixing the KEMONO_BASE_URL.
         """
@@ -51,10 +50,32 @@ class KemonoParty:
         return True
 
     @staticmethod
-    async def fetch_nsfw_images(tag: Optional[str] = None) -> Optional[dict]:
+    def _extract_result(post: dict) -> Dict[str, Any]:
         """
-        Fetch a random NSFW image from Kemono Party by filtering valid posts.
+        Build a result dictionary from a valid post.
+        Includes the main file full_url and a list of attachment full_urls.
+        """
+        result = {}
+        file_url = post.get("file", {}).get("full_url")
+        attachments = [att.get("full_url") for att in post.get("attachments", []) if att.get("full_url")]
+        result["file"] = file_url
+        result["attachments"] = attachments
+        return result
+
+    @staticmethod
+    async def fetch_nsfw_images(tag: Optional[str] = None, limit: int = 1) -> Union[Dict[str, Any], List[Dict[str, Any]], None]:
+        """
+        Fetch NSFW images
         """
         posts = await KemonoParty.fetch_posts(tag=tag, limit=100)
         valid_posts = [post for post in posts if KemonoParty.is_valid_post(post)]
-        return random.choice(valid_posts) if valid_posts else None
+        if not valid_posts:
+            return None
+        
+        if limit == 1:
+            chosen_post = random.choice(valid_posts)
+            return KemonoParty._extract_result(chosen_post)
+        else:
+            sample_size = min(limit, len(valid_posts))
+            selected_posts = random.sample(valid_posts, sample_size)
+            return [KemonoParty._extract_result(post) for post in selected_posts]

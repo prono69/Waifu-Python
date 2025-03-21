@@ -1,7 +1,7 @@
 import random, httpx
 import subprocess
 import asyncio
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Union, List
 from urllib.parse import urlparse, urlunparse, parse_qs, urlencode
 
 from ..API.api import ZEROCHAN_BASE_URL
@@ -15,41 +15,53 @@ class Zerochan:
     @staticmethod
     async def fetch_sfw_images(
         tag: Optional[str] = None,
-        size: str = 'large'
-    ) -> Optional[str]:
+        size: str = 'large',
+        limit: int = 1
+    ) -> Union[str, List[str], None]:
         """
-        Fetch a random image with comprehensive fallback handling.
-        Retries up to 4 times; if still null, returns None.
+        Fetch image(s) from Zerochan::
+          1. Query the basic endpoint to get a list of posts (IDs).
+          2. For each post, retrieve full post details to extract the post image link.
         """
         max_attempts = 4
-        result = None
-        for attempt in range(1, max_attempts + 1):
-            
+        retrived_urls: List[str] = []
+        attempt = 1
+
+        while attempt <= max_attempts and len(retrived_urls) < limit:
             try:
                 processed_tag, base_url, headers = Zerochan._prepare_request(tag)
                 params = await Zerochan._get_random_params(client, processed_tag, headers)
                 final_url, _ = await Zerochan._follow_redirects(client, base_url, params, headers)
                 posts = await Zerochan._fetch_posts(client, final_url, params, headers)
                 if not posts:
+                    attempt += 1
                     continue
 
-                post = random.choice(posts)
-                if not (post_id := post.get('id')):
-                    continue
+                random.shuffle(posts)
+                for post in posts:
+                    if len(retrived_urls) >= limit:
+                        break
+                    post_id = post.get('id')
+                    if not post_id:
+                        continue
 
-                if api_url := await Zerochan._get_api_image_url(client, post_id, size, headers):
-                    result = api_url
-                    break
+                    image_url = await Zerochan._get_api_image_url(client, post_id, size, headers)
+                    if not image_url:
+                        
+                        image_url = await Zerochan._get_gallerydl_image_url(post_id)
+                    
+                    if image_url and image_url not in retrived_urls:
+                        retrived_urls.append(image_url)
+            except Exception:                
+                pass
 
-                fallback = await Zerochan._get_gallerydl_image_url(post_id)
-                if fallback:
-                    result = fallback
-                    break
-            except Exception:
-                pass  
-            if result is None and attempt < max_attempts:
+            if len(retrived_urls) < limit:
                 await asyncio.sleep(1)
-        return result
+            attempt += 1
+
+        if not retrived_urls:
+            return None
+        return retrived_urls[0] if limit == 1 else retrived_urls
 
     @staticmethod
     async def _get_api_image_url(client, post_id: int, size: str, headers: dict) -> Optional[str]:
@@ -64,7 +76,6 @@ class Zerochan:
                 print(f"API requires authentication for {post_id}, using fallback")
             return None
         except Exception as e:
-            print(f"API error: {e}")
             return None
 
     @staticmethod
@@ -82,10 +93,10 @@ class Zerochan:
             )
             return result.stdout.strip().split('\n')[-1]
         except subprocess.CalledProcessError as e:
-            print(f"Gallery-dl failed: {e.stderr}")
+            print(f"Gallery-dl failed for post {post_id}: {e.stderr}")
             return None
         except Exception as e:
-            print(f"Gallery-dl error: {e}")
+            print(f"Gallery-dl error for post {post_id}: {e}")
             return None
         
     @staticmethod
@@ -112,13 +123,11 @@ class Zerochan:
                 **existing_params,
                 **{k: [str(v)] for k, v in current_params.items()}
             }
-            
             merged_params.update({
                 'json': [''],
                 'l': [str(current_params.get('l', 100))],
                 'p': [str(current_params.get('p', 1))]
             })
-
             current_url = urlunparse(parsed._replace(query=urlencode(merged_params, doseq=True)))
             redirect_count += 1
 
@@ -135,39 +144,6 @@ class Zerochan:
         except Exception as e:
             print(f"Fetch error: {e}")
             return []
-
-    @staticmethod
-    async def _get_image_url(client, post_id: int, size: str, headers: dict) -> Optional[str]:
-        """Fetch image URL with redirect handling.
-        
-        If a 303 redirect occurs, falls back to gallery‑dl.
-        """
-        if not post_id:
-            return None
-
-        details_url = f"{ZEROCHAN_BASE_URL}/{post_id}?json"
-        try:
-            response = await client.get(details_url, headers=headers)
-            response.raise_for_status()
-            return response.json().get(size)
-        except httpx.HTTPStatusError as e:
-            if e.response.status_code == 303:
-                fallback_url = f"{ZEROCHAN_BASE_URL}/{post_id}D"
-                print(f"Received 303 redirect, falling back to gallery-dl for {fallback_url}")
-                try:
-                    cmd = ["gallery-dl", "-C", "cookies/zerochan.txt", fallback_url]
-                    result = subprocess.run(cmd, capture_output=True, text=True, check=True)
-                    image_url = result.stdout.strip()
-                    return image_url
-                except Exception as e2:
-                    print(f"Gallery-dl fallback error: {e2}")
-                    return None
-            else:
-                print(f"Detail fetch error: {e}")
-                return None
-        except Exception as e:
-            print(f"Other detail error: {e}")
-            return None
 
     @staticmethod
     def _prepare_request(tag: Optional[str]) -> Tuple[str, str, dict]:

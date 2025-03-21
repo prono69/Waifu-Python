@@ -1,4 +1,4 @@
-from .Danborru import Danbooru
+from .Danbooru import Danbooru
 from .Gelborru import Gelbooru
 from .Safeborru import Safebooru
 

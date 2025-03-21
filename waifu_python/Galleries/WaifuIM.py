@@ -1,19 +1,18 @@
 import random
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, List
 
 from ..API.api import WAIFUIM_BASE_URL
 from ..Client.Client import client
 
 class WaifuIm:
     @staticmethod
-    async def fetch_image(tag: Optional[str] = None) -> Optional[str]:
+    async def fetch_images(tag: Optional[str] = None, limit: int = 1) -> List[str]:
         """
-        Fetch an image from waifu.im API and return the direct image URL.
-        If a tag is provided, it is included in the request parameters with spaces replaced by hyphens.
+        Fetch images from waifu.im.
         """
-        params = {}
+        params = {"many": True, "is_nsfw": False, "limit": limit}
         if tag:
-            tag = tag.replace(" ", "-")  
+            tag = tag.replace(" ", "-")
             params["included_tags"] = tag
         
         url = f"{WAIFUIM_BASE_URL}search"
@@ -21,10 +20,8 @@ class WaifuIm:
         response = await client.get(url, params=params)
         if response.status_code == 200:
             data = response.json()
-            images = data.get("images", [])
-            if images:
-                return images[0].get("url")
-        raise Exception(f"Failed to fetch image: {response.text}")
+            return [img["url"] for img in data.get("images", [])]
+        raise Exception(f"Failed to fetch images: {response.text}")
 
     @staticmethod
     async def get_tags() -> Dict[str, Any]:
@@ -38,27 +35,27 @@ class WaifuIm:
         raise Exception(f"Failed to fetch tags: {response.text}")
 
     @staticmethod
-    async def fetch_sfw_images(tag: Optional[str] = None) -> Dict[str, Any]:
+    async def fetch_sfw_images(tag: Optional[str] = None, limit: int = 1) -> List[str]:
         """
-        Fetch an SFW image from waifu.im API.
+        Fetch multiple SFW images from waifu.im API.
         If no tag is provided, a random tag is chosen from the 'versatile' category.
         """
         tags = await WaifuIm.get_tags()
         if "versatile" not in tags:
-            return None
-
+            return []
+    
         tag = tag.replace(" ", "-") if tag else random.choice(tags["versatile"])
-        return await WaifuIm.fetch_image(tag)
+        return await WaifuIm.fetch_images(tag, limit)
 
     @staticmethod
-    async def fetch_nsfw_images(tag: Optional[str] = None) -> Dict[str, Any]:
+    async def fetch_nsfw_images(tag: Optional[str] = None, limit: int = 1) -> List[str]:
         """
-        Fetch an NSFW image from waifu.im API.
+        Fetch multiple NSFW images from waifu.im API.
         If no tag is provided, a random tag is chosen from the 'nsfw' category.
         """
         tags = await WaifuIm.get_tags()
         if "nsfw" not in tags:
-            return None
+            return []
 
         tag = tag.replace(" ", "-") if tag else random.choice(tags["nsfw"])
-        return await WaifuIm.fetch_image(tag)
+        return await WaifuIm.fetch_images(tag, limit)

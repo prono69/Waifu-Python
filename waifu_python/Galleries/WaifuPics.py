@@ -1,5 +1,5 @@
 import random
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, List, Union
 
 from ..API.api import WAIFUPICS_BASE_URL
 from ..Client.Client import client
@@ -18,51 +18,71 @@ class WaifuPics:
             return None
 
     @staticmethod
-    async def fetch_sfw_images(tag: Optional[str] = None, type: str = "sfw") -> Optional[str]:
+    async def fetch_sfw_images(
+        tag: Optional[str] = None, 
+        limit: int = 1, 
+        type: str = "sfw"
+    ) -> Union[str, List[str], None]:
         """
-        Fetches a random SFW image from waifu.pics based on the given tag and type.
-        If no tag is provided, a random tag is chosen from the available SFW tags.
+        Fetches SFW images.
         """
         type = type.lower()
         tags = await WaifuPics.get_tags()
         if tags is None or type not in tags:
             return None
         
-        tag = tag or (random.choice(tags[type]) if tags[type] else None)
-        if not tag:
-            return None
+        results = []
+        for _ in range(limit):
+            chosen_tag = tag or (random.choice(tags[type]) if tags[type] else None)
+            if not chosen_tag:
+                continue
 
-        url = f"{WAIFUPICS_BASE_URL}/{type}/{tag}"
-        try:
-            response = await client.get(url)
-            response.raise_for_status()
-            data = response.json()
-            return data.get("url")
-        except Exception as e:
-            print(f"Error fetching SFW image: {e}")
+            url = f"{WAIFUPICS_BASE_URL}/{type}/{chosen_tag}"
+            try:
+                response = await client.get(url)
+                response.raise_for_status()
+                data = response.json()
+                img_url = data.get("url")
+                if img_url:
+                    results.append(img_url)
+            except Exception as e:
+                print(f"Error fetching SFW image: {e}")
+        
+        if not results:
             return None
+        return results[0] if limit == 1 else results
 
     @staticmethod
-    async def fetch_nsfw_images(tag: Optional[str] = None, type: str = "nsfw") -> Optional[str]:
+    async def fetch_nsfw_images(
+        tag: Optional[str] = None, 
+        limit: int = 1, 
+        type: str = "nsfw"
+    ) -> Union[str, List[str], None]:
         """
-        Fetches a random NSFW image from waifu.pics based on the given tag and type.
-        If no tag is provided, a random tag is chosen from the available NSFW tags.
+        Fetches NSFW images.
         """
         type = type.lower()
         tags = await WaifuPics.get_tags()
         if tags is None or type not in tags:
             return None
         
-        tag = tag or (random.choice(tags[type]) if tags[type] else None)
-        if not tag:
-            return None
+        results = []
+        for _ in range(limit):
+            chosen_tag = tag or (random.choice(tags[type]) if tags[type] else None)
+            if not chosen_tag:
+                continue
 
-        url = f"{WAIFUPICS_BASE_URL}/{type}/{tag}"
-        try:
-            response = await client.get(url)
-            response.raise_for_status()
-            data = response.json()
-            return data.get("url")
-        except Exception as e:
-            print(f"Error fetching NSFW image: {e}")
+            url = f"{WAIFUPICS_BASE_URL}/{type}/{chosen_tag}"
+            try:
+                response = await client.get(url)
+                response.raise_for_status()
+                data = response.json()
+                img_url = data.get("url")
+                if img_url:
+                    results.append(img_url)
+            except Exception as e:
+                print(f"Error fetching NSFW image: {e}")
+        
+        if not results:
             return None
+        return results[0] if limit == 1 else results

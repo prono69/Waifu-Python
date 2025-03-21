@@ -1,5 +1,5 @@
 import random
-from typing import Dict, Any, Optional, Union
+from typing import Dict, Any, Optional, Union, List
 
 from ..API.api import NSFWBOT_BASE_URL
 from ..Client.Client import client
@@ -32,27 +32,51 @@ class NSFWBot:
             return None
 
     @staticmethod
-    async def fetch_sfw_images(tag: Optional[str] = None) -> Union[str, Dict[str, Any]]:
+    async def fetch_sfw_images(tag: Optional[str] = None, limit: int = 1) -> Union[str, List[str], None]:
         """
-        Fetch an SFW image from NSFWBot.
+        Fetch SFW image(s) from NSFWBot.
         """
         tags = await NSFWBot.get_tags()
         if "sfw" not in tags or not tags["sfw"]:
             return {"error": "No available SFW tags."}
 
         tag = tag or random.choice(tags["sfw"])
-        result = await NSFWBot._fetch_image("sfw", tag)
-        return result if result else {"error": "Failed to fetch SFW image."}
+        retrived_urls: List[str] = []
+        max_attempts = limit * 3  
+        attempts = 0
+        while len(retrived_urls) < limit and attempts < max_attempts:
+            result = await NSFWBot._fetch_image("sfw", tag)
+            if result and result not in retrived_urls:
+                retrived_urls.append(result)
+            attempts += 1
+
+        if not retrived_urls:
+            return {"error": "Failed to fetch SFW image."}
+        if limit == 1:
+            return retrived_urls[0]
+        return retrived_urls[:limit]
 
     @staticmethod
-    async def fetch_nsfw_images(tag: Optional[str] = None) -> Union[str, Dict[str, Any]]:
+    async def fetch_nsfw_images(tag: Optional[str] = None, limit: int = 1) -> Union[str, List[str], None]:
         """
-        Fetch an NSFW image.
+        Fetch NSFW image(s) from NSFWBot.
         """
         tags = await NSFWBot.get_tags()
         if "nsfw" not in tags or not tags["nsfw"]:
             return {"error": "No available NSFW tags."}
 
         tag = tag or random.choice(tags["nsfw"])
-        result = await NSFWBot._fetch_image("nsfw", tag)
-        return result if result else {"error": "Failed to fetch NSFW image."}
+        retrived_urls: List[str] = []
+        max_attempts = limit * 3
+        attempts = 0
+        while len(retrived_urls) < limit and attempts < max_attempts:
+            result = await NSFWBot._fetch_image("nsfw", tag)
+            if result and result not in retrived_urls:
+                retrived_urls.append(result)
+            attempts += 1
+
+        if not retrived_urls:
+            return {"error": "Failed to fetch NSFW image."}
+        if limit == 1:
+            return retrived_urls[0]
+        return retrived_urls[:limit]

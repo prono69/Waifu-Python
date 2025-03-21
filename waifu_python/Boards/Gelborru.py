@@ -1,33 +1,41 @@
 import random
-from typing import Optional, List, Any
+from typing import Optional, List, Union, Any
 
 from ..API.api import GELBORRU_BASE_URL
 from ..Client.Client import client
 
 class Gelbooru:
-
     MAX_RETRIES = 10  
 
     @staticmethod
-    async def fetch_images(tag: Optional[str] = None, limit: int = 100) -> Optional[str]:
+    async def fetch_images(tag: Optional[str] = None, limit: int = 100) -> Union[str, List[str], None]:
         """
-        Fetch a random SFW image from Gelbooru API.
+        Fetch random SFW image(s) from Gelbooru API.
         """
         total_posts = await Gelbooru._get_total_posts(client, tag)
         if not total_posts:
             return None  
+        if tag:
+            max_pages = max(total_posts // limit, 1)
+        else:
+            max_pages = 200
 
-        max_pages = max(total_posts // limit, 1)
-        
         for _ in range(Gelbooru.MAX_RETRIES):
             try:
                 params = Gelbooru._prepare_request(tag, limit, max_pages)
                 posts = await Gelbooru._fetch_posts(client, params)
                 if posts:
-                    post = random.choice(posts)
-                    if image_url := post.get('file_url'):
-                        return image_url
+                    
+                    valid_posts = [post for post in posts if post.get('file_url')]
+                    if valid_posts:
+                        if limit == 1:
+                            return random.choice(valid_posts).get('file_url')
+                        else:
+                            sample_size = min(limit, len(valid_posts))
+                            selected_posts = random.sample(valid_posts, sample_size)
+                            return [post.get('file_url') for post in selected_posts]
             except Exception:
+                
                 pass  
         return None  
 
@@ -35,7 +43,6 @@ class Gelbooru:
     async def _get_total_posts(client: Any, tag: Optional[str]) -> int:
         """
         Fetch the total number of available posts for a given tag.
-        Uses limit=1 to retrieve the total count from the API attributes.
         """
         try:
             params = {
@@ -51,7 +58,8 @@ class Gelbooru:
             response = await client.get(GELBORRU_BASE_URL, params=params)
             response.raise_for_status()
             data = response.json()
-            return int(data.get('@attributes', {}).get('count', 0))
+            count = int(data.get('@attributes', {}).get('count', 0))
+            return count
         except Exception:
             return 0  
 
@@ -72,7 +80,6 @@ class Gelbooru:
     def _prepare_request(tag: Optional[str], limit: int, max_pages: int) -> dict:
         """
         Prepare API request parameters with dynamic pagination.
-        Uses a random 'pid' (page index) between 0 and max_pages - 1.
         """
         base_params = {
             'page': 'dapi',
@@ -83,6 +90,5 @@ class Gelbooru:
             'pid': random.randint(0, max_pages - 1)
         }
         if tag:
-            return base_params | {'tags': tag.replace(' ', '_')}
-        else:
-            return base_params
+            base_params['tags'] = tag.replace(' ', '_')
+        return base_params

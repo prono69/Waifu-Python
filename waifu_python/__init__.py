@@ -1,5 +1,5 @@
 from .Anilist.Anilist import Anilist
-from .Boards.Danborru import Danbooru
+from .Boards.Danbooru import Danbooru
 from .Boards.Gelborru import Gelbooru
 from .Galleries.Konachan import Konachan
 from .Galleries.NekosBest import NekosBest

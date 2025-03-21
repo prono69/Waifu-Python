@@ -45,7 +45,7 @@ class Konachan:
     @staticmethod
     async def fetch_sfw_images(tag: Optional[str] = None, limit: int = 1, max_retries: int = 10) -> List[str]:
         """
-        Fetch safe-for-work images by automatically prepending "rating:safe" to the tag.
+        Fetch safe-for-work images 
         """
         if tag:
             processed_tag = tag.replace(" ", "_")
@@ -57,7 +57,7 @@ class Konachan:
     @staticmethod
     async def fetch_nsfw_images(tag: Optional[str] = None, limit: int = 1, max_retries: int = 10) -> List[str]:
         """
-        Fetch not-safe-for-work images by automatically prepending "rating:explicit" to the tag.
+        Fetch not-safe-for-work images 
         """
         if tag:
             processed_tag = tag.replace(" ", "_")

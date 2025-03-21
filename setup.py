@@ -5,9 +5,9 @@ long_description = (Path(__file__).parent / "README.MD").read_text()
 
 setup(
     name="waifu-python",
-    version="1.7.1",
+    version="1.8.0",
     packages=find_packages(),
-    install_requires=["httpx, gallery-dl"],
+    install_requires=["httpx"],
     author="Misfit",
     description="A project born out of boredom, designed to simplify and reduce the code related to the Waifu API.",
     url="https://github.com/MisfiT2020/Waifu-Python",
@@ -16,7 +16,7 @@ setup(
     long_description_content_type="text/markdown",
     entry_points={
         'console_scripts': [
-            'python-waifu=waifu_python.__main__:main',
+            'waifu-python=waifu_python.__main__:main', 
         ],
     },
 )
