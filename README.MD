@@ -16,6 +16,66 @@ Use the package manager [pip](https://pip.pypa.io/en/stable/) to install **waifu
 pip install waifu-python
 ```
 
+## CLI Usage
+
+After installing waifu-python, you can interact with it directly from your terminal. Output for a quick reference:
+
+```bash
+╰─ ❯❯ waifu-python 
+usage: waifu-python [-h] [--limit LIMIT] [--nsfw | --sfw] [--tags] [--list] [api] [query]
+
+Waifu-Python API client
+
+Required Arguments:
+  api            API name
+  query          Search query (tag) if any
+
+options:
+  -h, --help     show this help message and exit
+  --limit LIMIT  Number of images to retrieve
+  --nsfw         Fetch in NSFW mode
+  --sfw          Fetch in SFW mode
+  --tags         Retrieve available tags for the specified API
+  --list         List all available API names with SFW/NSFW availability
+```
+
+### Examples
+- Fetches available Apis
+
+```bash
+waifu-python --list
+```
+
+- Fetch a random SFW image from a specific API:
+
+```bash
+waifu-python danbooru
+```
+
+- Fetch a NSFW image with a specific tag:
+
+```bash
+waifu-python konachan "raiden shogun" --nsfw 
+```
+
+- Retrieve available tags for a given API:
+
+```bash
+waifu-python waifuim --tags
+```
+
+- Fetch random images with Limits:
+
+```bash
+waifu-python random --limit 3
+```
+
+- Usage with multiple options:
+
+```bash
+waifu-python kemono "raiden shogun" --nsfw --limit 3
+```
+
 ## Features
 
 - **Flexible Search Input:**  
@@ -33,6 +93,9 @@ pip install waifu-python
 
 - **API-Specific Image Retrieval:**  
   Fetch random images from a specific API (e.g., **Danbooru, Waifu.im, Waifu.pics, etc.**) based on your preference.  
+
+- **CLI Support:**
+   Use `waifu-python` from the command line for quick access to images and tags.
 
 ## API Included
 
