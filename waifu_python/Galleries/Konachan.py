@@ -1,9 +1,5 @@
 import random
 from typing import Optional, List, Union, Any
-import asyncio
-import os
-import httpx
-from httpx_socks import AsyncProxyTransport
 
 from ..API.api import KONACHAN_BASE_URL
 from ..Client.Client import get_dynamic_client
