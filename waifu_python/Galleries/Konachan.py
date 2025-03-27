@@ -1,7 +1,9 @@
 import random
-from typing import Optional, List, Union
+from typing import Optional, List, Union, Any
 import asyncio
 import os
+import httpx
+from httpx_socks import AsyncProxyTransport
 
 from ..API.api import KONACHAN_BASE_URL
 from ..Client.Client import get_dynamic_client
@@ -14,11 +16,11 @@ class Konachan:
         max_retries: int = 10,
         use_proxy: bool = False
     ) -> Union[str, List[str], None]:
-
+        
         params = {"limit": 500} if limit == 1 else {"limit": limit}
         if tag:
             params["tags"] = tag
-
+        
         attempt = 0
         while attempt < max_retries:
             try:
@@ -28,17 +30,14 @@ class Konachan:
                 if not response.content:
                     attempt += 1
                     continue
-
                 images = response.json()
                 if not isinstance(images, list):
                     attempt += 1
                     continue
-
                 file_urls = [img["file_url"] for img in images if "file_url" in img]
                 if not file_urls:
                     attempt += 1
                     continue
-
                 if limit == 1:
                     return random.choice(file_urls)
                 else:
@@ -55,7 +54,7 @@ class Konachan:
         max_retries: int = 10,
         use_proxy: bool = False
     ) -> Union[str, List[str], None]:
-        
+
         if tag:
             processed_tag = tag.replace(" ", "_")
             combined_tag = f"rating:safe {processed_tag}"
@@ -70,6 +69,7 @@ class Konachan:
         max_retries: int = 10,
         use_proxy: bool = False
     ) -> Union[str, List[str], None]:
+
         if tag:
             processed_tag = tag.replace(" ", "_")
             combined_tag = f"rating:explicit {processed_tag}"

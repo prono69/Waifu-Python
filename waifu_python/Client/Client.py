@@ -32,6 +32,7 @@ def get_random_proxy() -> str:
     return ""
 
 def get_dynamic_client(use_proxy: bool = False) -> httpx.AsyncClient:
+
     if use_proxy:
         proxy_url = get_random_proxy()
         if proxy_url:
@@ -43,4 +44,5 @@ def get_dynamic_client(use_proxy: bool = False) -> httpx.AsyncClient:
                 limits=Connection,
                 headers=DEFAULT_HEADERS
             )
+
     return client
