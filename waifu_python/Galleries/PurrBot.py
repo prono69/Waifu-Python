@@ -78,23 +78,21 @@ class PurrBot:
             return {"error": str(e)}
     
     @staticmethod
-    async def fetch_nsfw_gif(tag: Optional[str] = None, limit: int = 1) -> Union[Dict[str, Any], List[Dict[str, Any]]]:
+    async def fetch_nsfw_gif(tag: Optional[str] = None, limit: int = 1) -> List[str]:
         """
-        Fetch NSFW gifs
+        Fetch NSFW gifs and return a list of URLs in the same format as SFW fetches.
         """
-        results: List[Dict[str, Any]] = []
+        results: List[str] = []
         provided_tag = tag.replace(" ", "_") if tag else None
-
-        max_attempts = limit * 3  
+        max_attempts = limit * 3
         attempts = 0
-
+    
         while len(results) < limit and attempts < max_attempts:
             current_tag = provided_tag if provided_tag is not None else random.choice(PurrBot.purrbot_nsfw_tags)
             if current_tag not in PurrBot.purrbot_nsfw_tags:
-                
                 attempts += 1
                 continue
-
+    
             url = f"{PURRBOT_BASE_URL}/img/nsfw/{current_tag}/gif"
             try:
                 response = await client.get(url)
@@ -102,19 +100,21 @@ class PurrBot:
                 data = response.json()
                 result = data.get("link") or {"error": "No link found"}
                 
-                if isinstance(result, str) and result not in [r.get("link", r) for r in results if isinstance(r, dict)]:
-                    results.append({"link": result})
-                elif isinstance(result, dict) and "error" not in result:
+                if isinstance(result, str) and result not in results:
                     results.append(result)
+                elif isinstance(result, dict) and "error" not in result:
+                    link = result.get("link")
+                    if link and link not in results:
+                        results.append(link)
             except Exception:
                 pass
+    
             attempts += 1
-
+    
         if not results:
-            return {"error": "Failed to fetch NSFW GIF"}
-        if limit == 1:
-            return results[0]
-        return results[:limit]
+            return ["Failed to fetch NSFW GIF"]
+        return results
+    
 
     @staticmethod
     async def fetch_sfw_images(tag: Optional[str] = None) -> Dict[str, Any]:

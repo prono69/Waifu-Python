@@ -6,21 +6,33 @@ from ..Client.Client import client
 
 class WaifuIm:
     @staticmethod
-    async def fetch_images(tag: Optional[str] = None, limit: int = 1) -> List[str]:
+    async def fetch_images(tag: Optional[str] = None, limit: int = 1, is_nsfw: bool = False) -> List[str]:
         """
         Fetch images from waifu.im.
         """
-        params = {"many": True, "is_nsfw": False, "limit": limit}
+        if is_nsfw:
+            many = True
+            original_limit = limit
+            if limit == 1:
+                limit = 2  
+        else:
+            many = True if limit > 1 else False
+
+        params = {"many": many, "is_nsfw": is_nsfw, "limit": limit}
         if tag:
             tag = tag.replace(" ", "-")
             params["included_tags"] = tag
-        
+
         url = f"{WAIFUIM_BASE_URL}search"
-        
+
         response = await client.get(url, params=params)
         if response.status_code == 200:
             data = response.json()
-            return [img["url"] for img in data.get("images", [])]
+            images = [img["url"] for img in data.get("images", [])]
+            
+            if is_nsfw and original_limit == 1:
+                return images[:1]
+            return images
         raise Exception(f"Failed to fetch images: {response.text}")
 
     @staticmethod
@@ -43,9 +55,9 @@ class WaifuIm:
         tags = await WaifuIm.get_tags()
         if "versatile" not in tags:
             return []
-    
+
         tag = tag.replace(" ", "-") if tag else random.choice(tags["versatile"])
-        return await WaifuIm.fetch_images(tag, limit)
+        return await WaifuIm.fetch_images(tag, limit, is_nsfw=False)
 
     @staticmethod
     async def fetch_nsfw_images(tag: Optional[str] = None, limit: int = 1) -> List[str]:
@@ -58,4 +70,4 @@ class WaifuIm:
             return []
 
         tag = tag.replace(" ", "-") if tag else random.choice(tags["nsfw"])
-        return await WaifuIm.fetch_images(tag, limit)
+        return await WaifuIm.fetch_images(tag, limit, is_nsfw=True)
