@@ -41,20 +41,18 @@ class APIRegistryCMD:
         for name, funcs in cls._apis.items():
             sfw_func = funcs.get("sfw")
             nsfw_func = funcs.get("nsfw")
-            
+    
             if sfw_func.__name__.lower() in {"fetch_images", "get_random"}:
-                avail = "ambiguous sfw/nsfw"
-            
+                avail = "ambiguous"
             elif sfw_func.__name__.lower() == "safe_wrapper":
                 avail = "nsfw"
-            
             elif nsfw_func is not sfw_func:
-                avail = "sfw/nsfw"
+                avail = "both"
             else:
                 avail = "sfw"
+            
             info_list.append((name, avail))
         return info_list
-    
 
           # Boards
 

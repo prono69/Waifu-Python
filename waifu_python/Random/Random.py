@@ -8,7 +8,8 @@ from ..utils.stdout import suppress_stdout
 class RandomWaifu:
     
     fetch_functions: List[Tuple[Callable[[Optional[str], int], Coroutine[Any, Any, Any]], type, bool]] = [
-        (Danbooru.fetch_images, Danbooru, False),
+        (Danbooru.fetch_sfw_images, Danbooru, False),
+        (Danbooru.fetch_nsfw_images, Danbooru, False),
         (Gelbooru.fetch_images, Gelbooru, False),
         (Yandere.fetch_images, Yandere, False),
         (Rule34.fetch_images, Rule34, False),
@@ -91,25 +92,25 @@ class RandomWaifu:
             return None
 
     @classmethod
-    async def get_random(cls, tag: Optional[str] = None, limit: int = 1) -> Optional[Union[str, List[str]]]:
+    async def get_random(cls, tag: Optional[str] = None, limit: int = 1) -> Optional[Tuple[Union[str, List[str]], str]]:
         funcs = cls.fetch_functions.copy()
         random.shuffle(funcs)
         for func, service_cls, supports_tags in funcs:
             result = await cls._try_function(func, service_cls, tag, limit)
             if result:
-                func_name = func.__name__.lower()
+                func_name = func.__name__.lower() 
                 if func_name == "fetch_images":
-                    print("Warning: Ambiguous content ")
+                    flag = "ambiguous"
                 elif "nsfw" in func_name:
-                    print("Warning: NSFW content")
-                return result
+                    flag = "nsfw"
+                else:
+                    flag = "sfw"
+                return result, flag
         return None
 
     @classmethod
     async def get_random_sfw_image(cls, tag: Optional[str] = None, limit: int = 1) -> Optional[Union[str, List[str]]]:
-        funcs = [(f, svc, _) for f, svc, _ in cls.fetch_functions 
-                 if svc in (WaifuIm, WaifuPics, Safebooru, NekosBest, NSFWBot, PicRe, Konachan, Zerochan)]
-        
+        funcs = [(f, svc, _) for f, svc, _ in cls.fetch_functions if f.__name__ == "fetch_sfw_images"]        
         random.shuffle(funcs)
         results = []
         for func, svc, _ in funcs:
@@ -131,7 +132,7 @@ class RandomWaifu:
                 break
 
         return results if limit > 1 else (results[0] if results else None)
-
+    
     @classmethod
     async def get_random_nsfw_image(cls, tag: Optional[str] = None, limit: int = 1) -> Optional[Union[str, List[str]]]:
         funcs = [(f, svc, _) for f, svc, _ in cls.fetch_functions 
