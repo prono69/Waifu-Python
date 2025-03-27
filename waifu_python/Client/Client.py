@@ -4,6 +4,8 @@ import time
 import httpx
 from httpx import Limits
 from httpx_socks import AsyncProxyTransport
+from typing import Optional
+
 
 _working_proxy = None
 _working_proxy_timestamp = 0
@@ -13,17 +15,18 @@ DEFAULT_HEADERS = {
     "User-Agent": "WaifuPython/1.0 akoushik88@gmail.com"
 }
 
-Connection = Limits(max_keepalive_connections=200, max_connections=1000)
-
 client = httpx.AsyncClient(
     timeout=15.0,
     follow_redirects=True,
-    limits=Connection,
+    limits=Limits(max_keepalive_connections=200, max_connections=1000),
     headers=DEFAULT_HEADERS
 )
 
 def get_random_proxy() -> str:
-    proxy_api_url = "https://api.proxyscrape.com/v4/free-proxy-list/get?request=display_proxies&proxy_format=protocolipport&format=text"
+    proxy_api_url = (
+        "https://api.proxyscrape.com/v4/free-proxy-list/get?"
+        "request=display_proxies&proxy_format=protocolipport&format=text"
+    )
     try:
         response = httpx.get(proxy_api_url, timeout=10)
         response.raise_for_status()
@@ -56,7 +59,7 @@ def get_dynamic_client(use_proxy: bool = False) -> httpx.AsyncClient:
                 transport=transport,
                 timeout=15.0,
                 follow_redirects=True,
-                limits=Connection,
+                limits=Limits(max_keepalive_connections=200, max_connections=1000),
                 headers=DEFAULT_HEADERS
             )
     return client

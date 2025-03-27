@@ -1,27 +1,27 @@
 import random
-from typing import Optional, List, Union, Any
+from typing import Optional, List, Union
 
-from ..API.api import KONACHAN_BASE_URL
 from ..Client.Client import get_dynamic_client
+from ..API.api import KONACHAN_BASE_URL
+
+dynamic_client = get_dynamic_client(use_proxy=True)
 
 class Konachan:
     @staticmethod
     async def fetch_images(
         tag: Optional[str] = None, 
         limit: int = 1, 
-        max_retries: int = 10,
-        use_proxy: bool = False
+        max_retries: int = 10
     ) -> Union[str, List[str], None]:
-        
         params = {"limit": 500} if limit == 1 else {"limit": limit}
         if tag:
             params["tags"] = tag
-        
+
         attempt = 0
         while attempt < max_retries:
             try:
-                async with get_dynamic_client(use_proxy=use_proxy) as client_instance:
-                    response = await client_instance.get(KONACHAN_BASE_URL, params=params)
+                
+                response = await dynamic_client.get(KONACHAN_BASE_URL, params=params)
                 response.raise_for_status()
                 if not response.content:
                     attempt += 1
@@ -47,28 +47,24 @@ class Konachan:
     async def fetch_sfw_images(
         tag: Optional[str] = None, 
         limit: int = 1, 
-        max_retries: int = 10,
-        use_proxy: bool = False
+        max_retries: int = 10
     ) -> Union[str, List[str], None]:
-
         if tag:
             processed_tag = tag.replace(" ", "_")
             combined_tag = f"rating:safe {processed_tag}"
         else:
             combined_tag = "rating:safe"
-        return await Konachan.fetch_images(tag=combined_tag, limit=limit, max_retries=max_retries, use_proxy=use_proxy)
+        return await Konachan.fetch_images(tag=combined_tag, limit=limit, max_retries=max_retries)
 
     @staticmethod
     async def fetch_nsfw_images(
         tag: Optional[str] = None, 
         limit: int = 1, 
-        max_retries: int = 10,
-        use_proxy: bool = False
+        max_retries: int = 10
     ) -> Union[str, List[str], None]:
-
         if tag:
             processed_tag = tag.replace(" ", "_")
             combined_tag = f"rating:explicit {processed_tag}"
         else:
             combined_tag = "rating:explicit"
-        return await Konachan.fetch_images(tag=combined_tag, limit=limit, max_retries=max_retries, use_proxy=use_proxy)
+        return await Konachan.fetch_images(tag=combined_tag, limit=limit, max_retries=max_retries)
