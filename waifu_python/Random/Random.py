@@ -8,8 +8,7 @@ from ..utils.stdout import suppress_stdout
 class RandomWaifu:
     
     fetch_functions: List[Tuple[Callable[[Optional[str], int], Coroutine[Any, Any, Any]], type, bool]] = [
-        (Danbooru.fetch_sfw_images, Danbooru, False),
-        (Danbooru.fetch_nsfw_images, Danbooru, False),
+        (Danbooru.fetch_images, Danbooru, False),
         (Gelbooru.fetch_images, Gelbooru, False),
         (Yandere.fetch_images, Yandere, False),
         (Rule34.fetch_images, Rule34, False),
@@ -90,7 +89,7 @@ class RandomWaifu:
             return result
         except Exception:
             return None
-
+        
     @classmethod
     async def get_random(cls, tag: Optional[str] = None, limit: int = 1) -> Optional[Tuple[Union[str, List[str]], str]]:
         funcs = cls.fetch_functions.copy()
@@ -132,12 +131,14 @@ class RandomWaifu:
                 break
 
         return results if limit > 1 else (results[0] if results else None)
-    
+
     @classmethod
     async def get_random_nsfw_image(cls, tag: Optional[str] = None, limit: int = 1) -> Optional[Union[str, List[str]]]:
-        funcs = [(f, svc, _) for f, svc, _ in cls.fetch_functions 
-                 if svc in (Rule34, NSFWBot, KemonoParty, Konachan, WaifuIm, WaifuPics)
-                    and 'gif' not in f.__name__.lower() and 'nsfw' in f.__name__.lower()]
+        funcs = [
+            (f, svc, _) 
+            for f, svc, _ in cls.fetch_functions 
+            if f.__name__ in ("fetch_nsfw_images", "fetch_images")
+        ]
         random.shuffle(funcs)
         results = []
         
@@ -146,18 +147,15 @@ class RandomWaifu:
             if not result or (isinstance(result, dict) and "error" in result):
                 continue
             if isinstance(result, list):
-                valid_items = [
-                    item for item in result
-                    if not (isinstance(item, dict) and "error" in item)
-                ]
-                results.extend(valid_items[:max(0, limit - len(results))])
+                results.extend(result[:max(0, limit - len(results))])
             else:
                 results.append(result)
+                
             if len(results) >= limit:
                 break
-    
+        
         return results if limit > 1 else (results[0] if results else None)
-
+    
     @classmethod
     async def get_random_sfw_gif(cls, tag: Optional[str] = None, limit: int = 1) -> Optional[Union[str, List[str]]]:
         """

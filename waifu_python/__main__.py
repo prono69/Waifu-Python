@@ -25,10 +25,14 @@ def main():
             tags = asyncio.run(handle_tags_command(args.api))
             print(f"{args.api.capitalize()} tags: {tags}")
         else:
-            nsfw = args.nsfw  
+            api = APIRegistryCMD.get_api(args.api)
+            if api['sfw'].__name__.lower() == "safe_wrapper":
+                nsfw = True
+            else:
+                nsfw = args.nsfw  
             if args.sfw:
                 nsfw = False
-
+        
             result = asyncio.run(handle_api_command(args.api, nsfw, args.query, args.limit))
             
             if isinstance(result, tuple):
@@ -40,7 +44,7 @@ def main():
             print(f"\n[{flag.upper()}] Results from {args.api.capitalize()}:")
             for item in (data if isinstance(data, list) else [data]):
                 print(f" - {item}")
-                
+        
     except Exception as e:
         print(f"\nError: {e}")
         sys.exit(1)
