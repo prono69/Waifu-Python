@@ -157,7 +157,7 @@ import asyncio
 
 async def main():
         
-        tag_search = Pixiv.fetch_images("raiden shogun") #parameters: download=Bool, max_pages=int  #fetches the tag
+        tag_search = await Pixiv.fetch_images("raiden shogun") #parameters: download=Bool, max_pages=int  #fetches the tag
         illust_related = await Pixiv.fetch_images(127318308) #int = pixiv image related
         illust_recommended = await Pixiv.fetch_images() #fetches recommended images from pixiv
         print(tag_search)
