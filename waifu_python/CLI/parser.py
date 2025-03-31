@@ -21,6 +21,9 @@ def create_parser():
     
     parser.add_argument('--list', action='store_true', help='List all available API names with SFW/NSFW availability')
     
+    parser.add_argument('--login', action='store_true', help='Login to Pixiv and retrieve auth tokens')
+    parser.add_argument('--refresh', type=str, help='Refresh Pixiv token; provide old refresh token')
+
     return parser
 
 if __name__ == "__main__":

@@ -1,6 +1,7 @@
 from ..Boards import *
 from ..Galleries import *
 from ..Random import *
+from ..Pixiv import *
 
 class APIRegistryCMD:
     _apis = {}
@@ -58,7 +59,9 @@ class APIRegistryCMD:
 
 APIRegistryCMD.register(
     name="danbooru",
-    sfw_func=Danbooru.fetch_images,
+    sfw_func=Danbooru.fetch_sfw_images,
+    nsfw_func=Danbooru.fetch_nsfw_images,
+
 )
 
 APIRegistryCMD.register(
@@ -132,6 +135,12 @@ APIRegistryCMD.register(
 )
 
 APIRegistryCMD.register(
+    name="sankaku",
+    sfw_func=Sankaku.fetch_sfw_images,
+    nsfw_func=Sankaku.fetch_nsfw_images
+)
+
+APIRegistryCMD.register(
     name="yandere",
     nsfw_func=Yandere.fetch_images,
 )
@@ -139,6 +148,13 @@ APIRegistryCMD.register(
 APIRegistryCMD.register(
     name="zerochan",
     sfw_func=Zerochan.fetch_sfw_images,
+)
+
+          # Pixiv
+
+APIRegistryCMD.register(
+    name="pixiv",
+    nsfw_func=Pixiv.fetch_images
 )
 
           # Random

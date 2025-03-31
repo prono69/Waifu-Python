@@ -1,4 +1,3 @@
-# Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
@@ -18,17 +17,22 @@ dist/
 
 # Logs and cache
 *.log
-.cache/
+.cache*
 .tox/
 .coverage
 nosetests.xml
 pytest_cache/
 
 # Editor & OS files
+.env
 .vscode/
 .idea/
 cookies/
 gallery-dl/
+downloads/
 .DS_Store
 Thumbs.db
-test.py
+t2.py
+rf.py
+pixiv2.py
+pixiv3.py

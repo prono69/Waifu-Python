@@ -2,7 +2,7 @@ import random
 from typing import Optional, List, Union, Any
 
 from ..API.api import KONACHAN_BASE_URL
-from ..Client.Client import get_dynamic_client
+from ..Client.Client import client
 
 class Konachan:
     @staticmethod
@@ -20,8 +20,7 @@ class Konachan:
         attempt = 0
         while attempt < max_retries:
             try:
-                async with get_dynamic_client(use_proxy=use_proxy) as client_instance:
-                    response = await client_instance.get(KONACHAN_BASE_URL, params=params)
+                response = await client.get(KONACHAN_BASE_URL, params=params)
                 response.raise_for_status()
                 if not response.content:
                     attempt += 1

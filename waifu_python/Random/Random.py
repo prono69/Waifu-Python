@@ -3,7 +3,7 @@ import inspect
 from typing import Any, Optional, Union, List, Tuple, Callable, Coroutine
 
 from waifu_python import *
-from ..utils.stdout import suppress_stdout
+from ..Utils.stdout import suppress_stdout
 
 class RandomWaifu:
     
@@ -22,6 +22,7 @@ class RandomWaifu:
         (NSFWBot.fetch_sfw_images, NSFWBot, True),
         (NSFWBot.fetch_nsfw_images, NSFWBot, True),
         (PicRe.fetch_sfw_images, PicRe, True),
+        (Pixiv.fetch_images, Pixiv, False),
         (Konachan.fetch_sfw_images, Konachan, False),
         (Konachan.fetch_nsfw_images, Konachan, False),
         (Zerochan.fetch_sfw_images, Zerochan, False),

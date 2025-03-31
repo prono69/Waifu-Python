@@ -1,3 +1,7 @@
+# PROXY API
+
+PROXY_API_URL = "https://api.proxyscrape.com/v4/free-proxy-list/get?request=display_proxies&proxy_format=protocolipport&format=text"
+
 # API ENDPOINTS
 
 GRAPHQL_BASE_URL = "https://graphql.anilist.co"
@@ -20,6 +24,8 @@ RULE34_BASE_URL = "https://api.rule34.xxx/index.php"
 
 SAFEBORRU_BASE_URL = "https://safebooru.org/index.php"
 
+SANKAKU_BASE_URL = "https://sankakuapi.com/posts"
+
 WAIFUIM_BASE_URL = "https://api.waifu.im/"
 
 WAIFUPICS_BASE_URL = "https://api.waifu.pics"
@@ -29,3 +35,5 @@ YANDE_RE_BASE_URL = "https://yande.re/post.json"
 KONACHAN_BASE_URL = "https://konachan.net/post.json"
 
 ZEROCHAN_BASE_URL = "https://www.zerochan.net"
+
+

@@ -1,33 +1,42 @@
 import random
 from typing import Optional, List
 
-from ..API.api import DANBORRU_BASE_URL
-from ..Client.Client import client, DEFAULT_HEADERS
+from ..API.api import SANKAKU_BASE_URL  
+from ..Client.Client import client
 
-class Danbooru:
+class Sankaku:
     @staticmethod
-    async def fetch_images(tag: Optional[str] = None,limit: int = 1,max_retries: int = 10,page_range: tuple = (0, 50)) -> List[str]:
+    async def fetch_images(
+        tag: Optional[str] = None,
+        limit: int = 1,
+        max_retries: int = 10,
+        page_range: tuple = (1, 50)
+    ) -> List[str]:
         """
-        Fetch image URLs from Danbooru.
-        """
-        request_limit = 200 if limit == 1 else min(limit, 200)
-        params = {"limit": request_limit}
+          - If tag is provided: https://sankakuapi.com/posts?lang=en&page=<1-50>&limit=<1-100>&tags=<tag>
+          - Otherwise:         https://sankakuapi.com/posts?page=<1-50>&limit=<1-100>
+                  """
+        fetch_limit = 100 if limit == 1 else limit
+
+        params = {
+            "limit": fetch_limit,
+            "page": random.randint(page_range[0], page_range[1])
+        }
         if tag:
             params["tags"] = tag
-        params["page"] = random.randint(page_range[0], page_range[1])
 
         attempt = 0
         while attempt < max_retries:
             try:
-                response = await client.get(DANBORRU_BASE_URL, params=params, headers=DEFAULT_HEADERS)
+                response = await client.get(SANKAKU_BASE_URL, params=params)
                 response.raise_for_status()
-                images = response.json()
+                posts = response.json()
 
-                if not isinstance(images, list):
+                if not isinstance(posts, list):
                     attempt += 1
                     continue
 
-                file_urls = [img["file_url"] for img in images if "file_url" in img and img["file_url"]]
+                file_urls = [post["file_url"] for post in posts if post.get("file_url")]
                 if not file_urls:
                     attempt += 1
                     continue
@@ -51,17 +60,17 @@ class Danbooru:
             combined_tag = f"{processed_tag} {safe_tag}"
         else:
             combined_tag = safe_tag
-        return await Danbooru.fetch_images(tag=combined_tag, limit=limit, max_retries=max_retries, page_range=(0, 50))
+        return await Sankaku.fetch_images(tag=combined_tag, limit=limit, max_retries=max_retries, page_range=(1, 50))
 
     @staticmethod
     async def fetch_nsfw_images(tag: Optional[str] = None, limit: int = 1, max_retries: int = 10) -> List[str]:
         """
-        Fetch NSFW images with the 'rating:explicit' filter.
+        Fetch NSFW images with the 'rating:explict' filter.
         """
-        nsfw_tag = "rating:explicit"
+        nsfw_tag = "rating:explict"
         if tag:
             processed_tag = tag.replace(" ", "_")
             combined_tag = f"{processed_tag} {nsfw_tag}"
         else:
             combined_tag = nsfw_tag
-        return await Danbooru.fetch_images(tag=combined_tag, limit=limit, max_retries=max_retries, page_range=(0, 15))
+        return await Sankaku.fetch_images(tag=combined_tag, limit=limit, max_retries=max_retries, page_range=(1, 50))

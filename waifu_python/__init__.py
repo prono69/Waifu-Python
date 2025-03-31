@@ -6,9 +6,11 @@ from .Galleries.NekosBest import NekosBest
 from .Galleries.NsfwBot import NSFWBot
 from .Galleries.Kemono import KemonoParty
 from .Galleries.PicsRe import PicRe
+from .Pixiv.Pixiv import Pixiv
 from .Galleries.PurrBot import PurrBot
 from .Galleries.Rule34  import Rule34 
 from .Boards.Safeborru import Safebooru
+from .Galleries.Sankaku import Sankaku
 from .Galleries.WaifuIM import WaifuIm
 from .Galleries.WaifuPics import WaifuPics
 from .Galleries.YandeRe import Yandere
@@ -18,7 +20,8 @@ from .Random.Random import RandomWaifu
 __all__ = [
     "WaifuIm", "WaifuPics", "NekosBest", "NSFWBot",
     "PicRe", "PurrBot", "Danbooru", "Safebooru", "Anilist", "Yandere",
-    "Konachan", "KemonoParty", "Zerochan", "Gelbooru", "Rule34", "RandomWaifu"
+    "Konachan", "KemonoParty", "Zerochan", "Gelbooru", "Rule34", "RandomWaifu",
+    "Sankaku", "Pixiv"
 ]
 
 

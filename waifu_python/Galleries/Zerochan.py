@@ -160,7 +160,7 @@ class Zerochan:
     async def _get_random_params(client, processed_tag: str, headers: dict) -> dict:
         """Generate random pagination parameters."""
         if processed_tag:
-            return {'json': '', 'l': 100, 'p': random.randint(1, 10)}
+            return {'json': '', 'l': 100, 'p': random.randint(0, 10)}
         try:
             response = await client.get(f"{ZEROCHAN_BASE_URL}/?json", params={'json': '', 'l': 1}, headers=headers)
             if (data := response.json()) and (posts := data.get('items', data)):

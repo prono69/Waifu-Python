@@ -17,14 +17,17 @@ class WaifuIm:
                 limit = 2  
         else:
             many = True if limit > 1 else False
-
-        params = {"many": many, "is_nsfw": is_nsfw, "limit": limit}
+    
+        params = {"many": many, "is_nsfw": is_nsfw}
+        if limit > 1:
+            params["limit"] = limit
+    
         if tag:
             tag = tag.replace(" ", "-")
             params["included_tags"] = tag
-
+    
         url = f"{WAIFUIM_BASE_URL}search"
-
+    
         response = await client.get(url, params=params)
         if response.status_code == 200:
             data = response.json()
@@ -34,6 +37,7 @@ class WaifuIm:
                 return images[:1]
             return images
         raise Exception(f"Failed to fetch images: {response.text}")
+
 
     @staticmethod
     async def get_tags() -> Dict[str, Any]:

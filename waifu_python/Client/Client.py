@@ -1,9 +1,9 @@
-import os
 import random
 import time
 import httpx
 from httpx import Limits
 from httpx_socks import AsyncProxyTransport
+from ..API.api import PROXY_API_URL
 
 _working_proxy = None
 _working_proxy_timestamp = 0
@@ -23,9 +23,8 @@ client = httpx.AsyncClient(
 )
 
 def get_random_proxy() -> str:
-    proxy_api_url = "https://api.proxyscrape.com/v4/free-proxy-list/get?request=display_proxies&proxy_format=protocolipport&format=text"
     try:
-        response = httpx.get(proxy_api_url, timeout=10)
+        response = httpx.get(PROXY_API_URL, timeout=10)
         response.raise_for_status()
         proxies = response.text.strip().splitlines()
         if proxies:

@@ -1,16 +1,16 @@
-![yae thumbnail](https://github.com/user-attachments/assets/55db4b9a-8649-49b3-bfd4-8af2305f1445)
+![yae thumbnail](https://raw.githubusercontent.com/MisfiT2020/src/ec794dcfec1ba88ed9f1f9e267cbe64cde758105/yae/yae2.png)
 
 <h1 align="center"> Waifu-Python </h1>
 
 <div align="center">
 
-A project born out of boredom, designed to simplify and reduce the code related to the [Waifu API](https://github.com/MisfiT2020/wpt/tree/main?tab=readme-ov-file#api-included)
+A project born out of boredom, designed to simplify and reduce the code related to the [Waifu API](https://github.com/MisfiT2020/Waifu-Python/tree/main#api-included)
 
 </div>
 
 ## Installation
 
-Use the package manager [pip](https://pip.pypa.io/en/stable/) to install **waifu-python**.
+Use the package manager [pip](https://pypi.org/project/waifu-python/) to install **waifu-python**.
 
 ```bash
 pip install waifu-python
@@ -86,7 +86,7 @@ waifu-python kemono "raiden shogun" --nsfw --limit 3
   Search for characters by name to get targeted results.  
 
 - **Tag Retrieval:**  
-  Retrieve available tags from supported [API](https://github.com/MisfiT2020/wpt/blob/main/README.MD#api-included) to help refine and filter your searches.  
+  Retrieve available tags from supported [API](https://github.com/MisfiT2020/Waifu-Python/tree/main?tab=readme-ov-file#api-included) to help refine and filter your searches.  
 
 - **Random Image Fetching:**  
   Easily retrieve random images across multiple supported APIs.  
@@ -96,6 +96,9 @@ waifu-python kemono "raiden shogun" --nsfw --limit 3
 
 - **CLI Support:**
    Use `waifu-python` from the command line for quick access to images and tags.
+
+- **Pixiv Tokens:**
+   Add support for [Pixiv tokens](https://github.com/MisfiT2020/Waifu-Python/tree/main?tab=readme-ov-file#pixiv-example) with an Auto-refresh Token—no need for manual access token 
 
 ## API Included
 
@@ -110,8 +113,10 @@ waifu-python kemono "raiden shogun" --nsfw --limit 3
 | [N-sfw.com](https://n-sfw.com/) | ✓ | ✓ |
 | [Pic.re](https://pic.re/) | ✓ | ✓ |
 | [Purrbot.site](https://purrbot.site/) | ✓ | - |
+| [Pixiv](https://pixiv.net/) | ✓ | - |
 | [Rule34](https://rule34.xxx/) | ✓ | - |
 | [Safeborru](https://safebooru.org/) | ✓ | - |
+| [Sankaku](https://sankaku.app/) | ✓ | - |
 | [Waifu.im](https://www.waifu.im/) | ✓ | ✓ |
 | [Waifu.pics](https://waifu.pics/) | ✓ | ✓ |
 | [Zerochan](https://www.zerochan.net/) | ✓ | - |
@@ -127,14 +132,49 @@ async def main():
 
     image_data1 = await WaifuIm.fetch_sfw_images()
     #Support for tags in Parameters
-    image_data2 = await WaifuIm.fetch_sfw_images('raiden-shogun')
+    image_data2 = await WaifuIm.fetch_sfw_images('raiden shogun')
     #Retrive tags for the API
     tags = await WaifuIm.get_tags()
 
-    print(f"Random Image{image_data1}\n\nRaiden Shogun{image_data2}\n\nTags{tags}")
+    print(f"Random Image: {image_data1}\n\nRaiden Shogun: {image_data2}\n\nTags{tags}")
 
 asyncio.run(main())
 ```
+
+## Environment Variables
+
+   Create a .env file in your project root and include your Pixiv refresh token:
+
+```python
+PIXIV_REFRESH_TOKEN=your_refresh_token_here
+```
+
+## Pixiv Example
+
+```python
+from waifu_python import Pixiv
+import asyncio
+
+async def main():
+        
+        tag_search = Pixiv.fetch_images("raiden shogun") #parameters: download=Bool, max_pages=int  #fetches the tag
+        illust_related = await Pixiv.fetch_images(127318308) #int = pixiv image related
+        illust_recommended = await Pixiv.fetch_images() #fetches recommended images from pixiv
+        print(tag_search)
+        print(illust_related)
+        print(illust_recommended)
+
+asyncio.run(main())
+```
+
+> To get `refresh_token`, see
+> [@ZipFile Pixiv OAuth Flow](https://gist.github.com/ZipFile/c9ebedb224406f4f11845ab700124362)
+> / [gppt: get-pixivpy-token](https://github.com/eggplants/get-pixivpy-token)
+> (Easy to use 👍 base on selenium) /
+> [OAuth with Selenium/ChromeDriver](https://gist.github.com/upbit/6edda27cb1644e94183291109b8a5fde)
+
+🔹 Or use command `waifu-python pixiv --login` or `waifu-python pixiv --refresh <old refresh code>`
+
 
 ## **Required Class Functions**
 
@@ -142,7 +182,7 @@ Each module in this library must implement the following functions:
 
 | Function Name        | APIs Used | Description |
 |----------------------|-----------| ------------|
-| `fetch_images`      | `Danbooru`, `Yandere`, `Rule34` | Fetches both SFW and NSFW images |
+| `fetch_images`      | `Danbooru`, `Pixiv`, `Yandere`, `Rule34` | Fetches both SFW and NSFW images |
 | `fetch_sfw_images`  | `WaifuIm`, `WaifuPics`, `Safebooru`, `NekosBest`, `NSFWBot`, `PicRe`, `Konachan`, `Zerochan` | Fetches only SFW images |
 | `fetch_nsfw_images` | `WaifuIm`, `WaifuPics`, `Konachan`, `NSFWBot`, `KemonoParty` | Fetches only NSFW images |
 | `fetch_sfw_gif`     | `PurrBot` | Fetches SFW GIFs |
@@ -178,6 +218,7 @@ async def main():
         "WaifuIm": await WaifuIm.fetch_nsfw_images(),
         "WaifuPics": await WaifuPics.fetch_nsfw_images(),
         "NSFWBot": await NSFWBot.fetch_nsfw_images(),
+        "Pixiv": await Pixiv.fetch_images(),
         "PurrBot GIF": await PurrBot.fetch_nsfw_gif(),
         "Danbooru": await Danbooru.fetch_images(),
         "Yandere": await Yandere.fetch_images(),
@@ -277,7 +318,6 @@ if __name__ == "__main__":
 🔹 If `search="<character_name>"` is not provided, it will return random characters.
 
 
-
 ## Example 4: Using Waifu API in a Telegram Bot
 
 ```python
@@ -369,6 +409,12 @@ async def send_character(client, message):
 if __name__ == "__main__":
     app.run()
 ```
+
+## Credits & Attributions
+
+- **Pixipy3** – A Pixiv Project [Pixipy3's repo](https://github.com/upbit/pixivpy/tree/master).
+- **ZipFile's Gist** – Wiki for Pixiv Tokens [here](https://gist.github.com/ZipFile/c9ebedb224406f4f11845ab700124362).
+
 
 ## Contributing
 

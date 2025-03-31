@@ -12,7 +12,7 @@ class Safebooru:
         """
         if limit == 1:
             request_limit = 100
-            pid = random.randint(1, 50)
+            pid = random.randint(0, 50)
         else:
             request_limit = limit
             pid = None
