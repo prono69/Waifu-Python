@@ -1,3 +1,4 @@
 httpx==0.28.1
 gallery-dl
 httpx_socks
+python-dotenv
