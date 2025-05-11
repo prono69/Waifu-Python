@@ -1,7 +1,4 @@
-from ..Boards import *
-from ..Galleries import *
-from ..Random import *
-from ..Pixiv import *
+from waifu_python import *
 
 class APIRegistryCMD:
     _apis = {}
@@ -54,6 +51,15 @@ class APIRegistryCMD:
             
             info_list.append((name, avail))
         return info_list
+
+
+          # AI Boards
+
+APIRegistryCMD.register(
+    name="aibooru",
+    sfw_func=Aibooru.fetch_sfw_images,
+    nsfw_func=Aibooru.fetch_nsfw_images
+)
 
           # Boards
 
@@ -150,6 +156,18 @@ APIRegistryCMD.register(
     sfw_func=Zerochan.fetch_sfw_images,
 )
 
+APIRegistryCMD.register(
+    name="tbib",
+    sfw_func=Tbib.fetch_sfw_images,
+    nsfw_func=Tbib.fetch_nsfw_images,
+)
+
+APIRegistryCMD.register(
+    name="hiji",
+    sfw_func=Hijiribe.fetch_sfw_images,
+    nsfw_func=Hijiribe.fetch_nsfw_images,
+)
+
           # Pixiv
 
 APIRegistryCMD.register(
@@ -182,4 +200,16 @@ APIRegistryCMD.register(
 APIRegistryCMD.register(
     name="random-ngif",
     nsfw_func=RandomWaifu.get_random_nsfw_gif
+)
+
+
+       # Misc - Iwara
+APIRegistryCMD.register(
+    name="iwara",
+    nsfw_func=Iwara.iwara_fetch
+)
+
+APIRegistryCMD.register(
+    name="iwara-random",
+    nsfw_func=Iwara.fetch_random
 )

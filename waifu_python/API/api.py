@@ -4,13 +4,19 @@ PROXY_API_URL = "https://api.proxyscrape.com/v4/free-proxy-list/get?request=disp
 
 # API ENDPOINTS
 
+AIBOORU_BASE_URL = "https://aibooru.online/posts.json"
+
 GRAPHQL_BASE_URL = "https://graphql.anilist.co"
 
 DANBORRU_BASE_URL = "https://danbooru.donmai.us/posts.json"
 
 GELBORRU_BASE_URL = "https://gelbooru.com/index.php"
 
+IWARA_API_URL = "https://api.iwara.tv"
+
 KEMONO_BASE_URL = "https://kemono.su"
+
+HIJIRIBE_BASE_URL = "https://hijiribe.donmai.us/posts.json"
 
 NEKOS_BASE_URL = "https://nekos.best/api/v2"
 
@@ -25,6 +31,8 @@ RULE34_BASE_URL = "https://api.rule34.xxx/index.php"
 SAFEBORRU_BASE_URL = "https://safebooru.org/index.php"
 
 SANKAKU_BASE_URL = "https://sankakuapi.com/posts"
+
+TBIB_BASE_URL = "https://tbib.org/index.php?page=dapi&s=post&q=index"
 
 WAIFUIM_BASE_URL = "https://api.waifu.im/"
 

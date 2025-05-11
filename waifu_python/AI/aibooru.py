@@ -1,10 +1,10 @@
 import random
 from typing import Optional, List, Union, Any
 
-from ..API.api import KONACHAN_BASE_URL
+from ..API.api import AIBOORU_BASE_URL
 from ..Client.Client import client
 
-class Konachan:
+class Aibooru:
     @staticmethod
     async def fetch_images(
         tag: Optional[str] = None, 
@@ -20,7 +20,7 @@ class Konachan:
         attempt = 0
         while attempt < max_retries:
             try:
-                response = await client.get(KONACHAN_BASE_URL, params=params)
+                response = await client.get(AIBOORU_BASE_URL, params=params)
                 response.raise_for_status()
                 if not response.content:
                     attempt += 1
@@ -38,7 +38,7 @@ class Konachan:
                 else:
                     return file_urls[:limit]
             except Exception as e:
-                print(f"Error fetching {attempt+1}: {e}")
+                print(f"Error fetching images on attempt {attempt+1}: {e}")
                 attempt += 1
         return None
 
@@ -55,7 +55,7 @@ class Konachan:
             combined_tag = f"rating:safe {processed_tag}"
         else:
             combined_tag = "rating:safe"
-        return await Konachan.fetch_images(tag=combined_tag, limit=limit, max_retries=max_retries, use_proxy=use_proxy)
+        return await Aibooru.fetch_images(tag=combined_tag, limit=limit, max_retries=max_retries, use_proxy=use_proxy)
 
     @staticmethod
     async def fetch_nsfw_images(
@@ -70,4 +70,4 @@ class Konachan:
             combined_tag = f"rating:explicit {processed_tag}"
         else:
             combined_tag = "rating:explicit"
-        return await Konachan.fetch_images(tag=combined_tag, limit=limit, max_retries=max_retries, use_proxy=use_proxy)
+        return await Aibooru.fetch_images(tag=combined_tag, limit=limit, max_retries=max_retries, use_proxy=use_proxy)

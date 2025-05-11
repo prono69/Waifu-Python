@@ -28,7 +28,7 @@ class NSFWBot:
             data = response.json()
             return data.get("url_cdn")
         except Exception as e:
-            print(f"Error fetching image for tag '{tag}' ({endpoint_type}): {e}")
+            print(f"Error fetching tag '{tag}' ({endpoint_type}): {e}")
             return None
 
     @staticmethod

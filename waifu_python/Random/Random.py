@@ -28,6 +28,16 @@ class RandomWaifu:
         (Zerochan.fetch_sfw_images, Zerochan, False),
         (PurrBot.fetch_sfw_gif, PurrBot, True),
         (PurrBot.fetch_nsfw_gif, PurrBot, True),
+        (Sankaku.fetch_sfw_images, Sankaku, False),
+        (Sankaku.fetch_nsfw_images, Sankaku, False),
+        (KemonoParty.fetch_nsfw_images, KemonoParty, True),
+        (Iwara.iwara_fetch, Iwara, True),
+        (Aibooru.fetch_sfw_images, Iwara, False),
+        (Aibooru.fetch_nsfw_images, Iwara, True),
+        (Tbib.fetch_sfw_images, Tbib, False),
+        (Tbib.fetch_sfw_images, Tbib, True),
+        (Hijiribe.fetch_sfw_images, Hijiribe, False),
+        (Hijiribe.fetch_sfw_images, Hijiribe, True)
     ]
 
     @classmethod
@@ -47,9 +57,9 @@ class RandomWaifu:
                 return None
             if isinstance(result, list) and any(isinstance(item, dict) and 'error' in item for item in result):
                 return None
-                
+
             return result
-            
+
         except Exception:
             return None
         
@@ -137,7 +147,7 @@ class RandomWaifu:
     @classmethod
     async def get_random_nsfw_image(cls, tag: Optional[str] = None, limit: int = 1) -> Optional[Union[str, List[str]]]:
         funcs = [(f, svc, _) for f, svc, _ in cls.fetch_functions 
-                 if svc in (Rule34, NSFWBot, KemonoParty, Konachan, WaifuIm, WaifuPics)
+                 if svc in (Rule34, NSFWBot, KemonoParty, Konachan, WaifuIm, WaifuPics, Aibooru, Pixiv, Tbib, Hijiribe)
                     and 'gif' not in f.__name__.lower() and 'nsfw' in f.__name__.lower()]
         random.shuffle(funcs)
         results = []

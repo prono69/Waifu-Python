@@ -1,4 +1,4 @@
-![yae thumbnail](https://raw.githubusercontent.com/MisfiT2020/src/ec794dcfec1ba88ed9f1f9e267cbe64cde758105/yae/yae2.png)
+![yae thumbnail](https://raw.githubusercontent.com/MisfiT2020/src/d1f6c7d89cfde9b4263eec2f86cca965471322a8/yae/y2.png)
 
 <h1 align="center"> Waifu-Python </h1>
 
@@ -7,6 +7,13 @@
 A project born out of boredom, designed to simplify and reduce the code related to the [Waifu API](https://github.com/MisfiT2020/Waifu-Python/tree/main#api-included)
 
 </div>
+
+<div align="center">
+  <a href="https://t.me/ShogunUpdates">
+    <img src="https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white" alt="Telegram Badge"/>
+  </a>
+</div>
+
 
 ## Installation
 
@@ -102,24 +109,29 @@ waifu-python kemono "raiden shogun" --nsfw --limit 3
 
 ## API Included
 
-| API           | WORKING | TAGS |
-|--------------|---------|------|
-| [Anilist](https://anilist.co/) | ✓ | - |
-| [Danborru](https://danbooru.donmai.us/) | ✓ | - |
-| [Gelbooru](https://gelbooru.com/) | ✓ | - |
-| [KemonoParty](https://kemono.su/) | ✓ | - |
-| [Konachan](https://konachan.net/) | ✓ | - |
-| [Nekos.best](https://nekos.best/) | ✓ | ✓ |
-| [N-sfw.com](https://n-sfw.com/) | ✓ | ✓ |
-| [Pic.re](https://pic.re/) | ✓ | ✓ |
-| [Purrbot.site](https://purrbot.site/) | ✓ | - |
-| [Pixiv](https://pixiv.net/) | ✓ | - |
-| [Rule34](https://rule34.xxx/) | ✓ | - |
-| [Safeborru](https://safebooru.org/) | ✓ | - |
-| [Sankaku](https://sankaku.app/) | ✓ | - |
-| [Waifu.im](https://www.waifu.im/) | ✓ | ✓ |
-| [Waifu.pics](https://waifu.pics/) | ✓ | ✓ |
-| [Zerochan](https://www.zerochan.net/) | ✓ | - |
+| API                                     | WORKING | TAGS |
+| --------------------------------------- | ------- | ---- |
+| [AiBooru](https://aibooru.online/)      | ✓       | -    |
+| [Anilist](https://anilist.co/)          | ✓       | -    |
+| [Danborru](https://danbooru.donmai.us/) | ✓       | -    |
+| [Gelbooru](https://gelbooru.com/)       | ✓       | -    |
+| [Hijiribe](https://hijiribe.donmai.us/) | ✓       | -    |
+| [Iwara](https://www.iwara.tv/)          | ✓       | -    |
+| [KemonoParty](https://kemono.su/)       | ✓       | -    |
+| [Konachan](https://konachan.net/)       | ✓       | -    |
+| [Nekos.best](https://nekos.best/)       | ✓       | ✓    |
+| [N-sfw.com](https://n-sfw.com/)         | ✓       | ✓    |
+| [Pic.re](https://pic.re/)               | ✓       | ✓    |
+| [Pixiv](https://pixiv.net/)             | ✓       | -    |
+| [Purrbot.site](https://purrbot.site/)   | ✓       | -    |
+| [Rule34](https://rule34.xxx/)           | ✓       | -    |
+| [Safeborru](https://safebooru.org/)     | ✓       | -    |
+| [Sankaku](https://sankaku.app/)         | ✓       | -    |
+| [Tbib](https://tbib.org/)               | ✓       | -    |
+| [Waifu.im](https://www.waifu.im/)       | ✓       | ✓    |
+| [Waifu.pics](https://waifu.pics/)       | ✓       | ✓    |
+| [Zerochan](https://www.zerochan.net/)   | ✓       | -    |
+
 
 
 ## Usage Example
@@ -146,8 +158,11 @@ asyncio.run(main())
    Create a .env file in your project root and include your Pixiv refresh token:
 
 ```python
-PIXIV_REFRESH_TOKEN=your_refresh_token_here
+IWARA_EMAIL=<mail>
+IWARA_PASSWORD=<password>
+PIXIV_REFRESH_TOKEN=<refresh token>
 ```
+🔹 or Export the variables
 
 ## Pixiv Example
 
@@ -182,22 +197,20 @@ Each module in this library must implement the following functions:
 
 | Function Name        | APIs Used | Description |
 |----------------------|-----------| ------------|
-| `fetch_images`      | `Danbooru`, `Pixiv`, `Yandere`, `Rule34` | Fetches both SFW and NSFW images |
-| `fetch_sfw_images`  | `WaifuIm`, `WaifuPics`, `Safebooru`, `NekosBest`, `NSFWBot`, `PicRe`, `Konachan`, `Zerochan` | Fetches only SFW images |
-| `fetch_nsfw_images` | `WaifuIm`, `WaifuPics`, `Konachan`, `NSFWBot`, `KemonoParty` | Fetches only NSFW images |
+| `fetch_images`      | `Danbooru`, `Pixiv`, `Yandere`, `Gelbooru`, `Rule34` | Fetches both SFW and NSFW images |
+| `fetch_sfw_images`  | `WaifuIm`, `WaifuPics`, `Safebooru`, `NekosBest`, `NSFWBot`, `PurrBot`, `PicRe`, `Konachan`, `Zerochan`, `Sankaku`, `Tbib`, `Hijiribe`, `Aibooru` | Fetches only SFW images |
+| `fetch_nsfw_images` | `WaifuIm`, `WaifuPics`, `Konachan`, `NSFWBot`, `KemonoParty`, `Sankaku`, `Tbib`, `Hijiribe`, `Pixiv`, `Aibooru` | Fetches only NSFW images |
 | `fetch_sfw_gif`     | `PurrBot` | Fetches SFW GIFs |
 | `fetch_nsfw_gif`    | `PurrBot` | Fetches NSFW GIFs |
 | `get_tags`          | `WaifuIm`, `NekosBest`, `WaifuPics`, `PicRe`, `NSFWBot`, `PurrBot` | Fetches Tags from API |
+| `iwara_fetch` & `fetch_random`         | `Iwara` | <i>Fetches Url (no search parameter)<i> & <i>fetches random url data</i> |
 
 
 ## Example 1: Fetching Images from Multiple APIs
 
 ```python
 import asyncio
-from waifu_python import (
-    WaifuIm, NekosBest, WaifuPics, PicRe, PurrBot, NSFWBot,
-    Safebooru, Danbooru, Konachan, Yandere, Zerochan, KemonoParty, Rule34
-)
+from waifu_python import *
 
 async def main():
     # ----- SFW Images -----
@@ -211,6 +224,10 @@ async def main():
         "SafeBooru": await Safebooru.fetch_images(),
         "Konachan": await Konachan.fetch_sfw_images(),
         "Zerochan": await Zerochan.fetch_sfw_images(),
+        "Sankaku": await Sankaku.fetch_sfw_images(),
+        "Tbib": await Tbib.fetch_sfw_images(),
+        "Hijiribe": await Hijiribe.fetch_sfw_images(),
+        "Aibooru": await Aibooru.fetch_sfw_images()
     }
 
     # ----- NSFW Images/GIFs -----
@@ -224,6 +241,11 @@ async def main():
         "Yandere": await Yandere.fetch_images(),
         "Rule34": await Rule34.fetch_images(),
         "KemonoParty": await KemonoParty.fetch_nsfw_images()
+        "Sankaku": await Sankaku.fetch_nsfw_images(),
+        "Tbib": await Tbib.fetch_nsfw_images(), 
+        "Hijiribe": await Hijiribe.fetch_nsfw_images(), 
+        "Pixiv": await Pixiv.fetch_nsfw_images(), 
+        "Aibooru": await Aibooru.fetch_nsfw_images()
     }
 
     # ----- Tags -----
