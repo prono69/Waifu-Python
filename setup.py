@@ -5,7 +5,7 @@ long_description = (Path(__file__).parent / "README.MD").read_text()
 
 setup(
     name="waifu-python",
-    version="1.8.7",
+    version="1.9.1",
     packages=find_packages(),
     install_requires=["httpx", "gallery-dl", "httpx_socks", "python-dotenv"],
     author="Misfit",

@@ -25,7 +25,8 @@ pytest_cache/
 
 # Editor & OS files
 .env
-test*
+test.py
+test/
 .vscode/
 .idea/
 cookies/

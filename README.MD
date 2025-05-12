@@ -132,6 +132,7 @@ waifu-python kemono "raiden shogun" --nsfw --limit 3
 | [Waifu.pics](https://waifu.pics/)       | ✓       | ✓    |
 | [Zerochan](https://www.zerochan.net/)   | ✓       | -    |
 
+🔹 `Hijiribe` as `hiji` in cli
 
 
 ## Usage Example

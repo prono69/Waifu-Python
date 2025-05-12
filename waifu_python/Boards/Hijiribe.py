@@ -9,9 +9,7 @@ class Hijiribe:
     @staticmethod
     def _build_query(tags: List[str], page: int) -> str:
         """Handle Query's"""
-        if not tags:
-            return f"page={page}&limit=200"
-            
+        
         processed = [t.replace(" ", "_") for t in tags]
         joined = "+".join(processed)
         encoded = urllib.parse.quote(joined, safe=":+")
@@ -27,10 +25,10 @@ class Hijiribe:
         tags = tags or []
         collected = []
         seen_pages = set()
-
         final_page_range = page_range or ((1, 1000) if not tags else (1, 20))
 
         for attempt in range(max_retries):
+            
             while True:
                 page = random.randint(final_page_range[0], final_page_range[1])
                 if page not in seen_pages:
@@ -40,8 +38,9 @@ class Hijiribe:
                 query = Hijiribe._build_query(tags, page)
                 full_url = f"{HIJIRIBE_BASE_URL}?{query}"
                 response = await client.get(full_url)
-                response.raise_for_status()                
+                response.raise_for_status()
                 posts = response.json()
+
                 urls = [
                     p["file_url"] for p in posts
                     if isinstance(p, dict) and p.get("file_url")
@@ -51,10 +50,8 @@ class Hijiribe:
                     collected.extend(urls)
                     if len(collected) >= limit:
                         return random.sample(collected, limit)
-
-            except Exception as e:
+            except Exception:
                 continue
-
         return random.sample(collected, min(limit, len(collected)))
 
     @staticmethod
@@ -63,14 +60,15 @@ class Hijiribe:
         limit: int = 1,
         max_retries: int = 10
     ) -> List[str]:
-        tags = []
+        tags: List[str] = ["rating:safe"]
         if tag:
-            tags.extend([tag, "rating:safe"])
+            tags.append(tag)
         return await Hijiribe.fetch_images(
             tags=tags,
             limit=limit,
             max_retries=max_retries,
-            page_range=(1, 10) if tag else None
+            
+            page_range=(1, 10)
         )
 
     @staticmethod
@@ -79,7 +77,7 @@ class Hijiribe:
         limit: int = 1,
         max_retries: int = 10
     ) -> List[str]:
-        tags = []
+        tags: List[str] = []
         if tag:
             tags.extend([tag, "rating:explicit"])
         return await Hijiribe.fetch_images(
