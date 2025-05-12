@@ -25,8 +25,12 @@ jobs:
         run: |
           python -m build --sdist --wheel
 
+      - name: Remove existing .pypirc
+        run: rm -f ~/.pypirc
+
       - name: Publish to PyPI
         env:
+          TWINE_USERNAME: __token__       
           TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
         run: |
           python -m twine upload dist/*
