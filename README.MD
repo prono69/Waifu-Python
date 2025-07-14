@@ -347,7 +347,7 @@ if __name__ == "__main__":
 
 ```python
 from pyrogram import Client, filters
-from waifu_python import AniList, SafeBooru, Danbooru
+from waifu_python import Anilist, Safebooru, Danbooru
 
 app = Client("Raiden", api_id="YOUR_API_ID", api_hash="YOUR_API_HASH", bot_token="YOUR_BOT_TOKEN")
 

@@ -1,7 +1,7 @@
 import requests, asyncio, time, hashlib, random, os
 from pathlib import Path
 from dotenv import load_dotenv
-from typing import Optional, Any, Union
+from typing import Optional, Any, Union, List
 import urllib.parse as up
 
 env_path = Path(__file__).resolve().parent.parent.parent / ".env"
@@ -315,9 +315,9 @@ class Pixiv:
         self,
         illust_id: Union[int, str],
         filter: str = "for_ios",
-        seed_illust_ids: Union[int, str, list[str]] | None = None,
+        seed_illust_ids: Optional[Union[int, str, List[str]]] = None,
         offset: Union[int, str, None] = None,
-        viewed: Union[str, list[str]] | None = None,
+        viewed: Optional[Union[str, List[str]]] = None,
         req_auth: bool = True,
     ) -> Optional[dict]:
         url = f"{self.hosts}/v2/illust/related"
