@@ -200,7 +200,7 @@ Each module in this library must implement the following functions:
 |----------------------|-----------| ------------|
 | `fetch_images`      | `Danbooru`, `Pixiv`, `Yandere`, `Gelbooru`, `Rule34` | Fetches both SFW and NSFW images |
 | `fetch_sfw_images`  | `WaifuIm`, `WaifuPics`, `Safebooru`, `NekosBest`, `NSFWBot`, `PurrBot`, `PicRe`, `Konachan`, `Zerochan`, `Sankaku`, `Tbib`, `Hijiribe`, `Aibooru` | Fetches only SFW images |
-| `fetch_nsfw_images` | `WaifuIm`, `WaifuPics`, `Konachan`, `NSFWBot`, `KemonoParty`, `Sankaku`, `Tbib`, `Hijiribe`, `Pixiv`, `Aibooru` | Fetches only NSFW images |
+| `fetch_nsfw_images` | `WaifuIm`, `WaifuPics`, `Konachan`, `NSFWBot`, `KemonoParty`, `Sankaku`, `Tbib`, `Hijiribe`, `Aibooru` | Fetches only NSFW images |
 | `fetch_sfw_gif`     | `PurrBot` | Fetches SFW GIFs |
 | `fetch_nsfw_gif`    | `PurrBot` | Fetches NSFW GIFs |
 | `get_tags`          | `WaifuIm`, `NekosBest`, `WaifuPics`, `PicRe`, `NSFWBot`, `PurrBot` | Fetches Tags from API |
@@ -320,10 +320,12 @@ from waifu_python import Anilist
 
 async def main():
 
-    waifus = await Anilist.fetch_waifus(search='Mahiru Shiina')
-    characters = await Anilist.fetch_characters(search="eren yeager")
+    waifus = await Anilist.fetch_waifus('Mahiru Shiina')
+    characters = await Anilist.fetch_characters("eren yeager")
+    anime = await Anilist.search_anime("kimi no na wa")
     print(waifus)
     print(characters)
+    print(anime)
     
 if __name__ == "__main__":
     asyncio.run(main())
@@ -333,12 +335,12 @@ if __name__ == "__main__":
 
 | Function | Description | Search Parameter | Returned Fields |
 |----------|-------------|------------------| --------------- |
-| `fetch_waifus(search="<search>")` | Fetches waifus only (female characters). | Optional | `name`, `anime`, `image`, `age`, `gender`, `description` |
-| `fetch_characters(search="<search>")` | Fetches all characters (male & female). | Optional | `name`, `anime`, `image`, `age`, `gender`, `description` |
+| `fetch_waifus("characterName")` | Fetches waifus only (female characters). | Optional | `name`, `anime`, `image`, `age`, `gender`, `description` |
+| `fetch_characters(characterName)` | Fetches all characters (male & female). | Optional | `name`, `anime`, `image`, `age`, `gender`, `description` |
 
 ##
 
-🔹 If `search="<character_name>"` is not provided, it will return random characters.
+🔹 If `character` is not provided, it will return random characters.
 
 
 ## Example 4: Using Waifu API in a Telegram Bot
